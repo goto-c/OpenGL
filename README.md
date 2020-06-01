@@ -1,7 +1,11 @@
 # OpenGL Demo
 
 "OpenGL Demo" is a demonstration of showing object with OpenGL.
-The goal of this project is to show full image of object in OBJ file and to manipulate that object as you like.
+The goal of this project is to show full object image and to manipulate that object freely.  
+
+Here's our goal  
+
+![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/sample.gif)
 
 # DEMO
 
@@ -15,9 +19,6 @@ Next demo with shading is below.
 ![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/bug_shade.gif)
 
 Next update will be installation of the texture on this pretty bug !
-
-↓ Here's our goal. (see license)
-![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/sample.gif)
 
 # Features
 

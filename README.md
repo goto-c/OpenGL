@@ -14,6 +14,8 @@ Next demo with shading is below.
 
 ![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/bug_shade.gif)
 
+Next update will be installation of the texture on this pretty bug !
+
 # Features
 
 This project only uses the OpenGL with fixed function pipeline, and ![GLFW](https://github.com/glfw/glfw).

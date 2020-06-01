@@ -135,7 +135,6 @@ int main(void)
   // 使用するobjファイルを指定し、データを読み込む
   std::string objfile_name;
   std::cout << "Put Object filename" << std::endl;
-  std::cout << "*** object must be composed of only TRIANGLE, not SQUARE ***" << std::endl;
   std::cout << " >>> ";
   std::cin >> objfile_name;
   read_obj(objfile_name);
@@ -173,7 +172,7 @@ int main(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glRotatef((float) glfwGetTime() * 50.f, 0.f, 1.f, 0.f);
-    glTranslatef(0.0f, -0.9f, 0.0f);
+    glTranslatef(0.0f, -0.5f, 0.0f);
       
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     

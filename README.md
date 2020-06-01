@@ -16,6 +16,9 @@ Next demo with shading is below.
 
 Next update will be installation of the texture on this pretty bug !
 
+↓ Here's our goal. (see license)
+![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/sample.gif)
+
 # Features
 
 This project only uses the OpenGL with fixed function pipeline, and ![GLFW](https://github.com/glfw/glfw).

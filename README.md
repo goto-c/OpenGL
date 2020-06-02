@@ -1,16 +1,24 @@
 # OpenGL Demo
 
 "OpenGL Demo" is a demonstration of showing object with OpenGL.
-The goal of this project is to show full image of object in OBJ file and to manipulate that object as you like.
+The goal of this project is to show full object image and to manipulate that object freely.  
+
+Here's our goal  
+
+![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/sample.gif)
 
 # DEMO
 
-You can see how the object can be shown with this software.
+You can see how objects can be shown with this software.
 The movie below is just a prototype, showing the image without normal/texture data.
 
 ![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/bug.gif) 
 
-The next step is to include normal vectors and textures information !
+Next demo with shading is below.
+
+![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/bug_shade.gif)
+
+Next update will be installation of the texture on this pretty bug !
 
 # Features
 
@@ -29,7 +37,7 @@ Besides github, you can also install GLFW in ![this page](https://www.glfw.org).
 
 Please create an excecution directory, and posit "main.cpp" file and an "@@@.obj" file there.
 Soon after you excecute the main.cpp program, you can put the object file name as demanded.
-Then, the featureless object silhiouette should appear in front of your eyes !
+Then, the object silhiouette should appear in front of your eyes !
 
 # Note
 

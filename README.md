@@ -46,11 +46,11 @@ Besides github, you can also install GLFW in [this page](https://www.glfw.org).
 Cloning the repository with  
 `git clone https://github.com/goto-c/OpenGL.git`  
   
-Make build directory in the ShowObj directory.
-    cd OpenGL
-    cd ShowObj
-    mkdir build
-    cd build
+Make build directory in the ShowObj directory.  
+    cd OpenGL  
+    cd ShowObj  
+    mkdir build  
+    cd build  
   
 cmake  
 `cmake -G Xcode ..`

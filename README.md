@@ -47,10 +47,10 @@ Cloning the repository with
 `git clone https://github.com/goto-c/OpenGL.git`  
   
 Make build directory in the ShowObj directory.  
-`cd OpenGL`
-`cd ShowObj` 
+`cd OpenGL`  
+`cd ShowObj`  
 `mkdir build`  
-`cd build`
+`cd build`  
   
 Do cmake  
 `cmake -G Xcode ..`

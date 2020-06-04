@@ -3,26 +3,30 @@
 "OpenGL Demo" is a demonstration of showing object with OpenGL.
 The goal of this project is to show full object image and to manipulate that object freely.  
 
-Here's our goal  
+Here's our goal.  
 
-![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/sample.gif)
+![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/gif/sample.gif)
 
 # DEMO
 
 You can see how objects can be shown with this software.
 The movie below is just a prototype, showing the image without normal/texture data.
 
-![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/bug.gif) 
+![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/gif/bug.gif) 
 
 Next demo with shading is below.
 
-![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/bug_shade.gif)
+![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/gif/bug_shade.gif)
 
-Next update will be installation of the texture on this pretty bug !
+Finally, texture has been added to the object !
+
+![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/gif/bug_full.gif)
+
+Now that the goal of this project is attained, we will move to another project !
 
 # Features
 
-This project only uses the OpenGL with fixed function pipeline, and ![GLFW](https://github.com/glfw/glfw).
+This project only uses the OpenGL with fixed function pipeline, and [GLFW](https://github.com/glfw/glfw).
 
 # Requirement
 
@@ -31,7 +35,7 @@ This project only uses the OpenGL with fixed function pipeline, and ![GLFW](http
 
 # Installation
 
-Besides github, you can also install GLFW in ![this page](https://www.glfw.org).
+Besides github, you can also install GLFW in [this page](https://www.glfw.org).
 
 # Usage
 

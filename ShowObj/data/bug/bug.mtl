@@ -1,0 +1,24 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 27.03.2018 21:04:30
+
+# マテリアルの名前を宣言
+#  -> objファイルには、f の前に" usemtl マテリアル要素名 "のように書かれる
+newmtl Standardmaterial_15
+
+# Ns: 鏡面反射角度　( 0.0 ~ 128.0 の範囲)
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	
+# Ka: 環境光　Kd: 拡散光　Ks: 鏡面光　(全て 0.0 ~ 1.0 の範囲)
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	
+# テクスチャ画像ファイル名
+	map_Ka bug.jpg
+	map_Kd bug.jpg

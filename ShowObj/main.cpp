@@ -10,30 +10,28 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-std::string objfile_name;
-std::vector<double> v; // 頂点の空間座標
-std::vector<double> vn; // 頂点の法線座標
-std::vector<double> vt; // 頂点のテクスチャ座標
-std::vector<unsigned int> f_v; // 面の頂点座標
-std::vector<unsigned int> f_t; // 面のテクスチャ座標
-std::vector<unsigned int> f_n; // 面の法線座標
-
-// mtlファイルのマテリアル情報を格納した構造体
-struct material_info {
+// mtlファイルのmaterial情報を格納する
+class CMaterialInfo {
+public:
     std::string name;
-    double Ka[3];
-    double Kd[3];
-    double Ks[3];
+    float Ka[4];
+    float Kd[4];
+    float Ks[4];
     int d;
     std::string map_Ka;
     std::string map_Kd;
     std::string map_d;
-    int f_start;
+    GLuint idTex_Kd = 0;
 };
 
-// マテリアル構造体を出現順に格納したベクトル
-material_info materials[1024];
-
+// objファイルのmaterial使用場所を格納する
+class CMaterialMap {
+    public:
+    std::string name;
+    unsigned int itri_start;
+    unsigned int itri_end;
+    int iMaterialInfo;
+};
 
 
 /* --------------- コールバック関数 ------------------*/
@@ -112,25 +110,32 @@ std::vector<unsigned int> strip_slash(std::string s){
 }
 
 // objファイルを読み込み、データをvectorに格納する
-void read_obj(std::string file_obj){
+void read_obj(std::vector<double>& aXYZ,
+              std::vector<double>& aNrm,
+              std::vector<double>& aTex,
+              std::vector<unsigned int>& aTri_XYZ,
+              std::vector<unsigned int>& aTri_Tex,
+              std::vector<unsigned int>& aTri_Nrm,
+              std::vector<CMaterialMap>& aMaterialMap,
+              const std::string& file_obj)
+{
+    aMaterialMap.clear();
     
     std::ifstream fin;
-    std::string fname = file_obj;
-    fin.open(fname);
-    if (fin == NULL) std::cout << "OBJ file open failed" << std::endl;
-    //else             std::cout << "OBJ file opened !" << std::endl;
+    fin.open(file_obj);
+    if (fin.fail())
+        std::cout << "obj file open failed" << std::endl;
     
-    v.clear();
-    vn.clear();
-    vt.clear();
-    f_v.clear();
-    f_t.clear();
-    f_n.clear();
+    aXYZ.clear();
+    aNrm.clear();
+    aTex.clear();
+    aTri_XYZ.clear();
+    aTri_Tex.clear();
+    aTri_Nrm.clear();
     
     const int BUFF_SIZE = 256;
     char buff[BUFF_SIZE];
-    int f_count = 0;
-    int mtl_count = 0;
+    int icount_tri = 0;
     
     while(!fin.eof()){
         fin.getline(buff, BUFF_SIZE);
@@ -140,35 +145,38 @@ void read_obj(std::string file_obj){
             char str[256];
             double x, y, z;
             sscanf(buff, "%s %lf %lf %lf", str, &x, &y, &z);
-            v.push_back(x);
-            v.push_back(y);
-            v.push_back(z);
+            aXYZ.push_back(x);
+            aXYZ.push_back(y);
+            aXYZ.push_back(z);
         }
         // 先頭が'vn'の場合
         if (buff[0]=='v' && buff[1]=='n'){
             char str[256];
             double x, y, z;
             sscanf(buff, "%s %lf %lf %lf", str, &x, &y, &z);
-            vn.push_back(x);
-            vn.push_back(y);
-            vn.push_back(z);
+            aNrm.push_back(x);
+            aNrm.push_back(y);
+            aNrm.push_back(z);
         }
         // 先頭が'vt'の場合
         if (buff[0]=='v' && buff[1]=='t'){
             char str[256];
-            double x, y, z;
-            sscanf(buff, "%s %lf %lf %lf", str, &x, &y, &z);
-            vt.push_back(x);
-            vt.push_back(y);
-            vt.push_back(z);
+            double s, t;
+            sscanf(buff, "%s %lf %lf", str, &s, &t);
+            aTex.push_back(s);
+            aTex.push_back(t);
         }
         // 先頭が'us'の場合
         if (buff[0]=='u' && buff[1]=='s'){
-            char str[256], mtl[1024];
-            sscanf(buff, "%s %s", str, mtl);
-            materials[mtl_count].name = mtl;
-            materials[mtl_count].f_start = mtl_count;
-            mtl_count++;
+            char str[256], mtl_name[1024];
+            sscanf(buff, "%s %s", str, mtl_name);
+            {
+                CMaterialMap mm;
+                mm.itri_start = icount_tri;
+                mm.name = std::string(mtl_name);
+                aMaterialMap.push_back(mm);
+                //std::cout << "usemtl: " << mm.name << std::endl;
+            }
         }
         // 先頭が'f'の場合
         if (buff[0]=='f'){
@@ -182,51 +190,59 @@ void read_obj(std::string file_obj){
             vertex0 = strip_slash(i0);
             vertex1 = strip_slash(i1);
             vertex2 = strip_slash(i2);
-            f_v.push_back(vertex0[0]-1);
-            f_v.push_back(vertex1[0]-1);
-            f_v.push_back(vertex2[0]-1);
-            f_t.push_back(vertex0[1]-1);
-            f_t.push_back(vertex1[1]-1);
-            f_t.push_back(vertex2[1]-1);
-            f_n.push_back(vertex0[2]-1);
-            f_n.push_back(vertex1[2]-1);
-            f_n.push_back(vertex2[2]-1);
+            aTri_XYZ.push_back(vertex0[0]-1);
+            aTri_XYZ.push_back(vertex1[0]-1);
+            aTri_XYZ.push_back(vertex2[0]-1);
+            aTri_Tex.push_back(vertex0[1]-1);
+            aTri_Tex.push_back(vertex1[1]-1);
+            aTri_Tex.push_back(vertex2[1]-1);
+            aTri_Nrm.push_back(vertex0[2]-1);
+            aTri_Nrm.push_back(vertex1[2]-1);
+            aTri_Nrm.push_back(vertex2[2]-1);
             // 四角形メッシュを加える場合、三角形に分割
             if (i3[0]!='\0'){
                 std::vector<unsigned int> vertex3;
                 vertex3.clear();
                 vertex3 = strip_slash(i3);
-                f_v.push_back(vertex0[0]-1);
-                f_v.push_back(vertex2[0]-1);
-                f_v.push_back(vertex3[0]-1);
-                f_t.push_back(vertex0[1]-1);
-                f_t.push_back(vertex2[1]-1);
-                f_t.push_back(vertex3[1]-1);
-                f_n.push_back(vertex0[2]-1);
-                f_n.push_back(vertex2[2]-1);
-                f_n.push_back(vertex3[2]-1);
-                f_count++;
+                aTri_XYZ.push_back(vertex0[0]-1);
+                aTri_XYZ.push_back(vertex2[0]-1);
+                aTri_XYZ.push_back(vertex3[0]-1);
+                aTri_Tex.push_back(vertex0[1]-1);
+                aTri_Tex.push_back(vertex2[1]-1);
+                aTri_Tex.push_back(vertex3[1]-1);
+                aTri_Nrm.push_back(vertex0[2]-1);
+                aTri_Nrm.push_back(vertex2[2]-1);
+                aTri_Nrm.push_back(vertex3[2]-1);
+                icount_tri++;
             }
-            f_count++;
+            icount_tri++;
         }
     }
     fin.close();
+    
+    for (unsigned int imm=0; imm<aMaterialMap.size()-1; imm++){
+        aMaterialMap[imm].itri_end = aMaterialMap[imm+1].itri_start;
+    }
+    aMaterialMap[aMaterialMap.size()-1].itri_end = aXYZ.size()/3;
 }
 
 
 /* ----------------- mtl ファイル読み込み用の関数 ---------------*/
 
-void read_mtl(std::string file_mtl){
-    
-    std::ifstream fin;
-    std::string fname = file_mtl;
-    fin.open(fname);
-    if (fin == NULL) std::cout << "MTL file open failed" << std::endl;
-    //else             std::cout << "MTL file opened !" << std::endl;
+void read_mtl(std::vector<CMaterialInfo>& aMat,
+              const std::string& file_mtl)
+{
+    std::ifstream fin(file_mtl);
+    if (fin.fail()){
+        std::cout << "mtl file open failed" << std::endl;
+        return;
+    }
     
     const int BUFF_SIZE = 256;
     char buff[BUFF_SIZE];
-    std::vector<unsigned int> m_idx;
+    
+    aMat.clear();
+    CMaterialInfo mi;
     
     while (!fin.eof()){
         fin.getline(buff, BUFF_SIZE);
@@ -234,173 +250,110 @@ void read_mtl(std::string file_mtl){
         // コメント行は飛ばす
         if (buff[0]=='#') continue;
         
-        // マテリアル名が一致する構造体配列の要素を検索
-        if (buff[0]=='n' && buff[1]=='e' && buff[7]=='{'){
+        // regigter material
+        if ( strncmp(buff, "newmtl", 6) == 0 ){
+            aMat.push_back(mi);
+            mi.map_d.clear();
+            mi.map_Ka.clear();
+            mi.map_Kd.clear();
             char str[256], name[1024];
             sscanf(buff, "%s %s", str, name);
-            std::cout << "name: " << name << std::endl;
-            m_idx.clear();
-            int idx = 0;
-            
-            while (materials[idx].name[0] == '{'){
-                // マテリアル名が一致すれば、そのインデックスをm_idxに記憶
-                if (materials[idx].name == name){
-                    m_idx.push_back(idx);
-                }
-                idx++;
-            }
+            //std::cout << "newmtl: " << name << std::endl;
+            mi.name = name;
         }
-        // 対応するマテリアルの構造体に、各種の情報を追加していく
-        for (int k=0; k<m_idx.size(); k++){
-            
-                // 環境光・拡散光・鏡面光のRGB値を構造体のメンバに追加
-                if (buff[1]=='K' && buff[2]=='a'){
-                    char str[256];
-                    double r, g, b;
-                    sscanf(buff, "%s %lf %lf %lf", str, &r, &g, &b);
-                    materials[m_idx[k]].Ka[0] = r;
-                    materials[m_idx[k]].Ka[1] = g;
-                    materials[m_idx[k]].Ka[2] = b;
-                }
-                if (buff[1]=='K' && buff[2]=='d'){
-                    char str[256];
-                    double r, g, b;
-                    sscanf(buff, "%s %lf %lf %lf", str, &r, &g, &b);
-                    materials[m_idx[k]].Kd[0] = r;
-                    materials[m_idx[k]].Kd[1] = g;
-                    materials[m_idx[k]].Kd[2] = b;
-                }
-                if (buff[1]=='K' && buff[2]=='s'){
-                    char str[256];
-                    double r, g, b;
-                    sscanf(buff, "%s %lf %lf %lf", str, &r, &g, &b);
-                    materials[m_idx[k]].Ks[0] = r;
-                    materials[m_idx[k]].Ks[1] = g;
-                    materials[m_idx[k]].Ks[2] = b;
-                }
-                // テクスチャ画像ファイル名を構造体メンバに追加
-                if (buff[1]=='m' && buff[5]=='K' && buff[6]=='a'){
-                    char str[256], map[1024];
-                    sscanf(buff, "%s %s", str, map);
-                    materials[m_idx[k]].map_Ka = map;
-                }
-                if (buff[1]=='m' && buff[5]=='K' && buff[6]=='d'){
-                    char str[256], map[1024];
-                    sscanf(buff, "%s %s", str, map);
-                    materials[m_idx[k]].map_Kd = map;
-                }
-                if (buff[1]=='m' && buff[5]=='d'){
-                    char str[256], map[1024];
-                    sscanf(buff, "%s %s", str, map);
-                    materials[m_idx[k]].map_d = map;
-                }
-            }
+        // 環境光・拡散光・鏡面光のRGB値を構造体のメンバに追加
+        if (buff[1]=='K' && buff[2]=='a'){
+            char str[256];
+            double r, g, b;
+            sscanf(buff, "%s %lf %lf %lf", str, &r, &g, &b);
+            mi.Ka[0] = r;
+            mi.Ka[1] = g;
+            mi.Ka[2] = b;
+            mi.Ka[3] = 1.f;
         }
-        
-}
-
-/* ------------------ 初期化関数 ----------------------*/
-
-static void InitText(const char *file_path){
-    
-    int width, height;
-    int channels;
-    unsigned char *img = stbi_load(file_path, &width, &height, &channels, 3);
-    
-    if (img == NULL) std::cout << "Failed to get image" << std::endl;
-    else {
-        std::cout << "texture -> " << file_path << std::endl;
-        std::cout << "           " << width << " , " << height << std::endl;
+        if (buff[1]=='K' && buff[2]=='d'){
+            char str[256];
+            double r, g, b;
+            sscanf(buff, "%s %lf %lf %lf", str, &r, &g, &b);
+            mi.Kd[0] = r;
+            mi.Kd[1] = g;
+            mi.Kd[2] = b;
+            mi.Kd[3] = 1.f;
+        }
+        if (buff[1]=='K' && buff[2]=='s'){
+            char str[256];
+            double r, g, b;
+            sscanf(buff, "%s %lf %lf %lf", str, &r, &g, &b);
+            mi.Ks[0] = r;
+            mi.Ks[1] = g;
+            mi.Ks[2] = b;
+            mi.Ks[3] = 1.f;
+        }
+        // テクスチャ画像ファイル名を構造体メンバに追加
+        if (buff[1]=='m' && buff[5]=='K' && buff[6]=='a'){
+            char str[256], map[1024];
+            sscanf(buff, "%s %s", str, map);
+            mi.map_Ka = map;
+        }
+        if (buff[1]=='m' && buff[5]=='K' && buff[6]=='d'){
+            char str[256], map[1024];
+            sscanf(buff, "%s %s", str, map);
+            mi.map_Kd = map;
+        }
+        if (buff[1]=='m' && buff[5]=='d'){
+            char str[256], map[1024];
+            sscanf(buff, "%s %s", str, map);
+            mi.map_d = map;
+        }
     }
-    
-    /* テクスチャ画像はバイト単位に詰め込まれている */
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-      
-    /* テクスチャの割り当て */
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0,
-        GL_RGB, GL_UNSIGNED_BYTE, img);
-        
-    /* テクスチャを拡大・縮小する方法の指定 */
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-      
-    /* 初期設定 */
-    glClearColor(0.7, 0.5, 0.3, 0.7); // 背景の色を指定
-    glDisable(GL_CULL_FACE); // ポリゴンの表面のみ表示
 }
-
-
-static void InitLight(GLfloat *lightamb){
-    
-    GLfloat lightpos[] = { 1.0, 1.0, 1.0, 0.5 }; /* 位置　　　 */
-    GLfloat lightcol[] = { 1.0, 1.0, 1.0, 1.0 }; /* 直接光強度 */
-      
-    /* 光源の初期設定 */
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightpos);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, lightcol);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, lightamb);
-}
-
 
 /* ------------------ ディスプレイ関数 -----------------*/
 
-void display(void){
-    
-  struct material_info *pt = &materials[0];
-    
-  for (int i = 0; i < f_v.size(); i++) {
-    
-    // 異なるマテリアルの描画を始める場合、テクスチャと光源を初期化
-    if (i == pt -> f_start){
-        
-        // テクスチャ画像が変更されている場合
-        if (pt -> map_Kd != (pt-1) -> map_Kd && pt -> map_Kd[0] != '\0'){
-            std::string tex_file = pt -> map_Kd;
-            std::string tex_file_path = "./data/" + objfile_name + "/" + tex_file;
-            InitText(tex_file_path.c_str());
-            //std::cout << " texture -> " << tex_file << std::endl;
-        }
-        
-        // 光源を設定
-        GLfloat lightamb[3] = {pt -> Ka[0],
-                               pt -> Ka[1],
-                               pt -> Ka[2]};
-        InitLight(lightamb);
-        
-        pt++;
-    }
-      
-    static const GLfloat color[] = {1.0, 1.0, 1.0, 1.0};
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-    glEnable(GL_TEXTURE_2D);
-      
-    glColor3f(1.0f, 1.0f, 0.5f);
-    glBegin(GL_TRIANGLES);
-    
-    // f_vtnを抜き出す
-    double t1, t2;
-    t1 =     vt[f_t[i] * 3 + 0];
-    t2 = 1 - vt[f_t[i] * 3 + 1];
-      
-    double n_vec[3] = {
-    vn[f_n[i] * 3 + 0],
-    vn[f_n[i] * 3 + 1],
-    vn[f_n[i] * 3 + 2]};
-      
-    double x, y, z;
-    x = v[f_v[i] * 3 + 0];
-    y = v[f_v[i] * 3 + 1];
-    z = v[f_v[i] * 3 + 2];
-      
-    glTexCoord2d(t1, t2);
-    glNormal3dv(n_vec);
-    glVertex3f(x, y, z);
+void display(const std::vector<double>& aXYZ,
+             const std::vector<double>& aNrm,
+             const std::vector<double>& aTex,
+             const std::vector<unsigned int>& aTri_XYZ,
+             const std::vector<unsigned int>& aTri_Tex,
+             const std::vector<unsigned int>& aTri_Nrm,
+             const std::vector<CMaterialMap>& aMtlMap,
+             const std::vector<CMaterialInfo>& aMtlInfo)
+{
+  ::glEnable(GL_LIGHTING);
+  for (const auto& mm : aMtlMap){
+      int imi = mm.iMaterialInfo;
+      if (imi < 0 || imi >= aMtlInfo.size()){
+          ::glDisable(GL_TEXTURE_2D);
+          const GLfloat color_white[] = { 1.0, 1.0, 1.0, 1.0 };
+          glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color_white);
+      }
+      else {
+          const auto& mi = aMtlInfo[imi];
+          ::glMaterialfv(GL_FRONT, GL_DIFFUSE, mi.Kd);
+          if ( ::glIsTexture(mi.idTex_Kd) ){
+              ::glBindTexture(GL_TEXTURE_2D, mi.idTex_Kd);
+              ::glEnable(GL_TEXTURE_2D);
+          }
+          else {
+              ::glDisable(GL_TEXTURE_2D);
+          }
+      }
+      ::glBegin(GL_TRIANGLES);
+      for (unsigned int itri = mm.itri_start; itri<mm.itri_end; itri++){
+          ::glTexCoord2dv(aTex.data() + aTri_Tex[itri*3+0] * 2);
+          ::glNormal3dv(aNrm.data() + aTri_Nrm[itri*3+0] * 3);
+          ::glVertex3dv(aXYZ.data() + aTri_XYZ[itri*3+0] * 3);
+          
+          ::glTexCoord2dv(aTex.data() + aTri_Tex[itri*3+1] * 2);
+          ::glNormal3dv(aNrm.data() + aTri_Nrm[itri*3+1] * 3);
+          ::glVertex3dv(aXYZ.data() + aTri_XYZ[itri*3+1] * 3);
+          
+          ::glTexCoord2dv(aTex.data() + aTri_Tex[itri*3+2] * 2);
+          ::glNormal3dv(aNrm.data() + aTri_Nrm[itri*3+2] * 3);
+          ::glVertex3dv(aXYZ.data() + aTri_XYZ[itri*3+2] * 3);
+      }
+      glEnd();
   }
-  glEnd();
-  glDisable(GL_TEXTURE_2D);
-  glFlush();
 }
 
 
@@ -408,33 +361,45 @@ void display(void){
 
 int main(void)
 {
-  // 使用するobjファイルを指定し、データを読み込む
-  std::cout << "Put Object filename without the extension" << std::endl;
-  std::cout << " >>> ";
-  std::cin >> objfile_name;
     
-  std::string file_obj = "./data/" + objfile_name + "/" + objfile_name + ".obj";
-  std::string file_mtl = "./data/" + objfile_name + "/" + objfile_name + ".mtl";
+  std::string path_obj = std::string(PATH_ROOT_DIR) + "/pattern_and_models/I2169S009/I2169S009.obj";
+  std::string path_mtl = std::string(PATH_ROOT_DIR) + "/pattern_and_models/I2169S009/I2169S009.mtl";
+  std::string path_dir = std::string(PATH_ROOT_DIR) + "/pattern_and_models/I2169S009";
     
-  read_obj(file_obj);
-  std::cout << "OBJ file loading succeeded !" << std::endl;
-  read_mtl(file_mtl);
-  std::cout << "MTL file loading succeeded !" << std::endl;
+  std::cout << path_obj << " " << path_mtl << std::endl;
     
-  /*
-  for (int i=0; i<3; i++){
-      std::cout << materials[i].f_start << ": " << materials[i].map_Kd << std::endl;
+  std::vector<double> aXYZ;
+  std::vector<double> aNrm;
+  std::vector<double> aTex;
+  std::vector<unsigned int> aTri_XYZ;
+  std::vector<unsigned int> aTri_Tex;
+  std::vector<unsigned int> aTri_Nrm;
+  std::vector<CMaterialMap> aMtlMap;
+    
+  read_obj(aXYZ, aNrm, aTex,
+           aTri_XYZ, aTri_Tex, aTri_Nrm,
+           aMtlMap,
+           path_obj);
+  std::cout << "obj file loading succeeded " << std::endl;
+    
+  for (auto& v : aXYZ) { v *= 0.01; }
+  for (auto& v : aNrm) { v *= -1; }
+    
+  std::vector<CMaterialInfo> aMtlInfo;
+  read_mtl(aMtlInfo,
+           path_mtl);
+  std::cout << "mtl file loading succeeded " << std::endl;
+    
+  std::cout << "number of material refered from obj : " << aMtlMap.size() << std::endl;
+  std::cout << "number of material defined in mtl : " << aMtlInfo.size() << std::endl;
+    
+  for (const auto& mi : aMtlInfo){
+      std::cout << "material information" << std::endl;
+      std::cout << "   name : " << mi.name << std::endl;
+      std::cout << "   Kd : " << mi.Kd[0] << " " << mi.Kd[1] << " " << mi.Kd[2] << std::endl;
+      std::cout << "   map_Kd : " << mi.map_Kd << std::endl;
+      std::cout << std::endl;
   }
-    
-  for (int i=0; i<3; i++){
-      std::cout << materials[i].name << ", " << std::endl;
-      std::cout << i << "Ka: " << materials[i].Ka[0] << ", " << materials[i].Ka[1] << ", " << materials[i].Ka[2] << std::endl;
-      std::cout << i << "Kd: " << materials[i].Kd[0] << ", " << materials[i].Kd[1] << ", " << materials[i].Kd[2] << std::endl;
-      std::cout << i << "Ks: " << materials[i].Ks[0] << ", " << materials[i].Ks[1] << ", " << materials[i].Ks[2] << std::endl;
-      std::cout << i << "map_Ka: " << materials[i].map_Ka << std::endl;
-      std::cout << i << "map_Kd: " << materials[i].map_Kd << std::endl;
-      std::cout << i << "map_d:  " << materials[i].map_d << std::endl;
-  }*/
     
   // GLFWを初期化し、ウィンドウを作成
   GLFWwindow* window;
@@ -452,6 +417,49 @@ int main(void)
   glfwMakeContextCurrent(window);
   glfwSetKeyCallback(window, key_callback);
     
+  {
+      GLfloat lightpos[] = { 1.0, 1.0, 1.0, 0.5 };
+      GLfloat lightcol[] = { 1.0, 1.0, 1.0, 1.0 };
+      /* 光源の初期設定 */
+      glEnable(GL_LIGHTING);
+      glEnable(GL_LIGHT0);
+      glLightfv(GL_LIGHT0, GL_DIFFUSE, lightpos);
+      glLightfv(GL_LIGHT0, GL_SPECULAR, lightcol);
+  }
+    
+  for (auto& mm : aMtlMap){
+      mm.iMaterialInfo = -1;
+      
+      for (unsigned int imi=0; imi<aMtlInfo.size(); imi++){
+          if (mm.name != aMtlInfo[imi].name) { continue; }
+          
+          mm.iMaterialInfo = imi;
+          CMaterialInfo& mi = aMtlInfo[imi];
+          
+          if (mi.map_Kd.empty()) continue;
+          if (mi.idTex_Kd != 0)  continue;
+          
+          glGenTextures(1, &(mi.idTex_Kd));
+          glBindTexture(GL_TEXTURE_2D, mi.idTex_Kd);
+          
+          int width, height;
+          int channels;
+          std::string img_path = path_dir + "/" + mi.map_Kd;
+          
+          stbi_set_flip_vertically_on_load(true);
+          unsigned char *img = stbi_load( img_path.c_str(), &width, &height, &channels, 3 );
+          
+          glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0,
+                       GL_RGB, GL_UNSIGNED_BYTE, img);
+          delete[] img;
+          glBindTexture(GL_TEXTURE_2D, 0);
+          break;
+      }
+  }
+
     
   // ウィンドウが表示されている間、繰り返す
   while (!glfwWindowShouldClose(window))
@@ -462,6 +470,8 @@ int main(void)
     ratio = width / (float) height;
       
     glViewport(0, 0, width, height);
+      
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     
@@ -472,11 +482,12 @@ int main(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glRotatef((float) glfwGetTime() * 50.f, 0.f, 1.f, 0.f);
-    glTranslatef(0.0f, -0.5f, 0.0f);
-      
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glRotatef(90, 0.0, 1.0, 0.0);
+    glTranslatef(0.0f, -0.9f, 0.0f);
     
-    display();
+    display(aXYZ, aNrm, aTex,
+            aTri_XYZ, aTri_Tex, aTri_Nrm,
+            aMtlMap, aMtlInfo);
       
     // カラーバッファを入れ替える
     glfwSwapBuffers(window);

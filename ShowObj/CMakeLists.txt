@@ -1,24 +1,48 @@
 # CMakeのバージョンを設定
 cmake_minimum_required(VERSION 2.8)
-# プロジェクト名と使用する言語を設定
-project(ShowObj CXX)
-set(GLFW_LIBRARY    /Users/Chihiro/Desktop/OpenGL/glfw/src/libglfw3.a)
-#get_filename_component(GLFW_LIBRARY ${GLFW_LIBRARY} ABSOLUTE)
-find_package(OpenGL REQUIRED)
-# a.outという実行ファイルをmain.cppとhello.cppから作成
-add_executable(a.out main.cpp)
-include_directories(../glfw/include)
-#target_link_libraries(a.out ${GLFW_LIBRARY} ${OPENGL_LIBRARY})
-set(CMAKE_CXX_FLAGS "-Wall -Wno-deprecated-declarations -g")
-  find_library( COCOA_LIBRARY Cocoa )
-  find_library( IOKIT_LIBRARY IOKit )
-  find_library( COREVIDEO_LIBRARY CoreVideo )
-  target_link_libraries(a.out
-    ${OPENGL_LIBRARY}
-    ${GLFW_LIBRARY}
-    ${COCOA_LIBRARY}
-    ${IOKIT_LIBRARY}
-    ${COREVIDEO_LIBRARY}
-  )
 
-#/Users/Chihiro/Desktop/OpenGL/glfw/src
+# 使用する言語を設定
+enable_language(CXX)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+set(CMAKE_CXX_FLAGS "-Wall -Wno-deprecated-declarations -g")
+
+# プロジェクト名を設定
+project(renderobj)
+
+add_definitions(-DPATH_ROOT_DIR="${PROJECT_SOURCE_DIR}/..")
+
+############
+
+# glfw
+set(GLFW_LIBRARY
+  ../delfem2/3rd_party/glfw/src/libglfw3.a)
+get_filename_component(GLFW_LIBRARY ${GLFW_LIBRARY} ABSOLUTE)
+set(GLFW_INCLUDE_DIR
+  ../delfem2/3rd_party/glfw/include)
+
+# OpenGL
+find_package(OpenGL REQUIRED)
+
+############
+
+include_directories(
+  ${GLFW_INCLUDE_DIR}
+  ../delfem2/3rd_party)
+
+# ShowObjという実行ファイルをmain.cppから作成
+add_executable(${PROJECT_NAME}
+  main.cpp)
+
+###########
+
+find_library( COCOA_LIBRARY Cocoa )
+find_library( IOKIT_LIBRARY IOKit )
+find_library( COREVIDEO_LIBRARY CoreVideo )
+target_link_libraries(${PROJECT_NAME}
+  ${OPENGL_LIBRARY}
+  ${GLFW_LIBRARY}
+  ${COCOA_LIBRARY}
+  ${IOKIT_LIBRARY}
+  ${COREVIDEO_LIBRARY}
+)

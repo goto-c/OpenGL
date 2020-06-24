@@ -5,7 +5,7 @@ The goal of this project is to show full object image.
 
 Here's the goal.  
 
-![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/gif/sample.gif)
+![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/sample.gif)
 
 ## DEMO
 
@@ -14,17 +14,17 @@ The project was developed step by step.
 ### 1st stage :::
 Firstly I showed the image without normal/texture data.  This image is mapped only eith the vertices information.  
 
-![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/gif/bug.gif) 
+![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug.gif) 
 
 ### 2nd stage :::
 Next step is the shading.  By using normal vector data,  the shades of the object are added.  
 
-![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/gif/bug_shade.gif)
+![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug_shade.gif)
 
 ### 3rd stage :::
 Finally, texture has been added to the object by using texture coordinates and the material information in "bug.mtl" file.
 
-![demo](https://github.com/goto-c/OpenGL/blob/master/ShowObj/gif/bug_full.gif)
+![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug_full.gif)
 
 
 ## Features

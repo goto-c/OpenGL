@@ -175,7 +175,7 @@ void read_obj(std::vector<double>& aXYZ,
                 mm.itri_start = icount_tri;
                 mm.name = std::string(mtl_name);
                 aMaterialMap.push_back(mm);
-                //std::cout << "usemtl: " << mm.name << std::endl;
+                std::cout << "usemtl: " << mm.name << std::endl;
             }
         }
         // 先頭が'f'の場合
@@ -252,13 +252,13 @@ void read_mtl(std::vector<CMaterialInfo>& aMat,
         
         // regigter material
         if ( strncmp(buff, "newmtl", 6) == 0 ){
-            aMat.push_back(mi);
+            //aMat.push_back(mi);
             mi.map_d.clear();
             mi.map_Ka.clear();
             mi.map_Kd.clear();
             char str[256], name[1024];
             sscanf(buff, "%s %s", str, name);
-            //std::cout << "newmtl: " << name << std::endl;
+            std::cout << "newmtl: " << name << std::endl;
             mi.name = name;
         }
         // 環境光・拡散光・鏡面光のRGB値を構造体のメンバに追加
@@ -279,6 +279,7 @@ void read_mtl(std::vector<CMaterialInfo>& aMat,
             mi.Kd[1] = g;
             mi.Kd[2] = b;
             mi.Kd[3] = 1.f;
+            std::cout << "Kd _: " << mi.Kd[0] << ", " << mi.Kd[1] << ", " << mi.Kd[2] << std::endl;
         }
         if (buff[1]=='K' && buff[2]=='s'){
             char str[256];
@@ -290,21 +291,30 @@ void read_mtl(std::vector<CMaterialInfo>& aMat,
             mi.Ks[3] = 1.f;
         }
         // テクスチャ画像ファイル名を構造体メンバに追加
-        if (buff[1]=='m' && buff[5]=='K' && buff[6]=='a'){
+        /*if (buff[1]=='m' && buff[5]=='K' && buff[6]=='a'){
             char str[256], map[1024];
             sscanf(buff, "%s %s", str, map);
             mi.map_Ka = map;
-        }
+        }*/
         if (buff[1]=='m' && buff[5]=='K' && buff[6]=='d'){
             char str[256], map[1024];
             sscanf(buff, "%s %s", str, map);
             mi.map_Kd = map;
+            std::cout << "map_Kd _: " << mi.map_Kd << std::endl;
+            
+            aMat.push_back(mi);
         }
-        if (buff[1]=='m' && buff[5]=='d'){
+        /*if (buff[1]=='m' && buff[5]=='d'){
             char str[256], map[1024];
             sscanf(buff, "%s %s", str, map);
             mi.map_d = map;
-        }
+        }*/
+    }
+    for (int i=0; i<3; i++){
+        std::cout << "aMat.size(): " << aMat.size() << std::endl;
+        std::cout << "aMat.Kd: " << aMat[i].Kd[0] << std::endl;
+        std::cout << "aMat.map_Kd: " << aMat[i].map_Kd << std::endl;
+        std::cout << std::endl;
     }
 }
 
@@ -362,9 +372,9 @@ void display(const std::vector<double>& aXYZ,
 int main(void)
 {
     
-  std::string path_obj = std::string(PATH_ROOT_DIR) + "/pattern_and_models/I2169S009/I2169S009.obj";
-  std::string path_mtl = std::string(PATH_ROOT_DIR) + "/pattern_and_models/I2169S009/I2169S009.mtl";
-  std::string path_dir = std::string(PATH_ROOT_DIR) + "/pattern_and_models/I2169S009";
+  std::string path_obj = std::string(PATH_ROOT_DIR) + "/03_ShowObj/data/bug/bug.obj";
+  std::string path_mtl = std::string(PATH_ROOT_DIR) + "/03_ShowObj/data/bug/bug.mtl";
+  std::string path_dir = std::string(PATH_ROOT_DIR) + "/03_ShowObj/data/bug";
     
   std::cout << path_obj << " " << path_mtl << std::endl;
     
@@ -375,31 +385,45 @@ int main(void)
   std::vector<unsigned int> aTri_Tex;
   std::vector<unsigned int> aTri_Nrm;
   std::vector<CMaterialMap> aMtlMap;
+  std::vector<CMaterialInfo> aMtlInfo;
     
+  /* Read and check the obj data */
   read_obj(aXYZ, aNrm, aTex,
            aTri_XYZ, aTri_Tex, aTri_Nrm,
            aMtlMap,
            path_obj);
   std::cout << "obj file loading succeeded " << std::endl;
     
-  for (auto& v : aXYZ) { v *= 0.01; }
+  /*for (int i=0; i<aXYZ.size()/3; i++){
+      std::cout << aXYZ[3*i] << ", " << aXYZ[3*i+1] << ", " << aXYZ[3*i+2] << std::endl;
+  }
+  for (int i=0; i<aTri_XYZ.size()/3; i++){
+      std::cout << aTri_XYZ[3*i] << ", " << aTri_XYZ[3*i+1] << ", " << aTri_XYZ[3*i+2] << std::endl;
+  }*/
+  std::cout << "number of vertices : " << aXYZ.size()/3 << std::endl;
+  std::cout << "number of faces    : " << aTri_XYZ.size()/3 << std::endl;
+  /* --------------------------- */
+    
+  //for (auto& v : aXYZ) { v *= 0.01; }
   for (auto& v : aNrm) { v *= -1; }
     
-  std::vector<CMaterialInfo> aMtlInfo;
+  /* Read and check the mtl data */
   read_mtl(aMtlInfo,
            path_mtl);
   std::cout << "mtl file loading succeeded " << std::endl;
-    
+  std::cout << std::endl;
   std::cout << "number of material refered from obj : " << aMtlMap.size() << std::endl;
   std::cout << "number of material defined in mtl : " << aMtlInfo.size() << std::endl;
     
   for (const auto& mi : aMtlInfo){
+      std::cout << std::endl;
       std::cout << "material information" << std::endl;
       std::cout << "   name : " << mi.name << std::endl;
       std::cout << "   Kd : " << mi.Kd[0] << " " << mi.Kd[1] << " " << mi.Kd[2] << std::endl;
       std::cout << "   map_Kd : " << mi.map_Kd << std::endl;
       std::cout << std::endl;
   }
+  /* -------------------------- */
     
   // GLFWを初期化し、ウィンドウを作成
   GLFWwindow* window;
@@ -471,7 +495,7 @@ int main(void)
       
     glViewport(0, 0, width, height);
       
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.7f, 0.6f, 0.4f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     
@@ -483,7 +507,7 @@ int main(void)
     glLoadIdentity();
     glRotatef((float) glfwGetTime() * 50.f, 0.f, 1.f, 0.f);
     glRotatef(90, 0.0, 1.0, 0.0);
-    glTranslatef(0.0f, -0.9f, 0.0f);
+    glTranslatef(0.0f, -0.5f, 0.0f);
     
     display(aXYZ, aNrm, aTex,
             aTri_XYZ, aTri_Tex, aTri_Nrm,

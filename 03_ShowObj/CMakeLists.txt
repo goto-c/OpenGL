@@ -16,10 +16,10 @@ add_definitions(-DPATH_ROOT_DIR="${PROJECT_SOURCE_DIR}/..")
 
 # glfw
 set(GLFW_LIBRARY
-  ../delfem2/3rd_party/glfw/src/libglfw3.a)
+  ../glfw/src/libglfw3.a)
 get_filename_component(GLFW_LIBRARY ${GLFW_LIBRARY} ABSOLUTE)
 set(GLFW_INCLUDE_DIR
-  ../delfem2/3rd_party/glfw/include)
+  ../glfw/include)
 
 # OpenGL
 find_package(OpenGL REQUIRED)
@@ -27,8 +27,7 @@ find_package(OpenGL REQUIRED)
 ############
 
 include_directories(
-  ${GLFW_INCLUDE_DIR}
-  ../delfem2/3rd_party)
+  ${GLFW_INCLUDE_DIR})
 
 # ShowObjという実行ファイルをmain.cppから作成
 add_executable(${PROJECT_NAME}

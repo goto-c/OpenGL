@@ -22,3 +22,5 @@ newmtl Standardmaterial_15
 # テクスチャ画像ファイル名
 	map_Ka bug.jpg
 	map_Kd bug.jpg
+
+# end of file

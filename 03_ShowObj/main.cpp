@@ -223,7 +223,7 @@ void read_obj(std::vector<double>& aXYZ,
     for (unsigned int imm=0; imm<aMaterialMap.size()-1; imm++){
         aMaterialMap[imm].itri_end = aMaterialMap[imm+1].itri_start;
     }
-    aMaterialMap[aMaterialMap.size()-1].itri_end = aXYZ.size()/3;
+    aMaterialMap[aMaterialMap.size()-1].itri_end = aTri_XYZ.size()/3;
 }
 
 
@@ -310,12 +310,12 @@ void read_mtl(std::vector<CMaterialInfo>& aMat,
             mi.map_d = map;
         }*/
     }
-    for (int i=0; i<3; i++){
+    /*for (int i=0; i<3; i++){
         std::cout << "aMat.size(): " << aMat.size() << std::endl;
         std::cout << "aMat.Kd: " << aMat[i].Kd[0] << std::endl;
         std::cout << "aMat.map_Kd: " << aMat[i].map_Kd << std::endl;
         std::cout << std::endl;
-    }
+    }*/
 }
 
 /* ------------------ ディスプレイ関数 -----------------*/
@@ -350,6 +350,7 @@ void display(const std::vector<double>& aXYZ,
       }
       ::glBegin(GL_TRIANGLES);
       for (unsigned int itri = mm.itri_start; itri<mm.itri_end; itri++){
+          //std::cout << "start: " << mm.itri_start << "end: " << mm.itri_end << std::endl;
           ::glTexCoord2dv(aTex.data() + aTri_Tex[itri*3+0] * 2);
           ::glNormal3dv(aNrm.data() + aTri_Nrm[itri*3+0] * 3);
           ::glVertex3dv(aXYZ.data() + aTri_XYZ[itri*3+0] * 3);
@@ -372,8 +373,8 @@ void display(const std::vector<double>& aXYZ,
 int main(void)
 {
     
-  std::string path_obj = std::string(PATH_ROOT_DIR) + "/03_ShowObj/data/bug/bug.obj";
-  std::string path_mtl = std::string(PATH_ROOT_DIR) + "/03_ShowObj/data/bug/bug.mtl";
+  std::string path_obj = std::string(PATH_ROOT_DIR) + "/03_ShowObj/data/bug/data.obj";
+  std::string path_mtl = std::string(PATH_ROOT_DIR) + "/03_ShowObj/data/bug/data.mtl";
   std::string path_dir = std::string(PATH_ROOT_DIR) + "/03_ShowObj/data/bug";
     
   std::cout << path_obj << " " << path_mtl << std::endl;

@@ -1,2 +1,2 @@
-# ShowObj  
-<img src="gif/bug_full.gif">
+# ShowObjWithShader  
+<img src="gif/progress.png">

@@ -362,8 +362,8 @@ void display(const std::vector<double>& aXYZ,
                      sizeof(unsigned int)*(mm.itri_end - mm.itri_start),
                      GL_UNSIGNED_INT,
                      (const void*)(sizeof(unsigned int)*mm.itri_start));
-      /*
-      ::glBegin(GL_TRIANGLES);
+      
+      /*::glBegin(GL_TRIANGLES);
       for (unsigned int itri = mm.itri_start; itri<mm.itri_end; itri++){
           //std::cout << "start: " << mm.itri_start << "end: " << mm.itri_end << std::endl;
           ::glTexCoord2dv(aTex.data() + aTri_Tex[itri*3+0] * 2);
@@ -514,19 +514,24 @@ int main(void)
       // vertex shader
       const char *glslvrt =
       "#version 330 core\n"
+      "in vec3 inNormal;\n"
+      "out vec3 normal;\n"
       "layout (location = 0) in vec3 aPos;\n"
       "void main()\n"
       "{\n"
       "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+      "   normal = inNormal;\n"
       "}\0";
       
       // fragment shader
       const char *glslfrg =
       "#version 330 core\n"
-      "out vec4 FragColor;\n"
+      "in vec3 normal;\n"
+      "out vec3 FragColor;\n"
       "void main()\n"
       "{\n"
-      "   FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
+      "   FragColor = vec3(0.5*normal + 0.5);\n"
+      "   //FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
       "}\n\0";
       
       // vertex shader
@@ -653,4 +658,3 @@ int main(void)
   glfwTerminate();
   exit(EXIT_SUCCESS);
 }
-

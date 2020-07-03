@@ -336,6 +336,7 @@ void display(const std::vector<double>& aXYZ,
              const std::vector<CMaterialMap>& aMtlMap,
              const std::vector<CMaterialInfo>& aMtlInfo)
 {
+//  glUseProgram(0);
   ::glEnable(GL_LIGHTING);
   for (const auto& mm : aMtlMap){ // mmにマテリアルマップを保存
       int imi = mm.iMaterialInfo;
@@ -357,13 +358,8 @@ void display(const std::vector<double>& aXYZ,
               ::glDisable(GL_TEXTURE_2D);
           }
       }
-
-      glDrawElements(GL_TRIANGLES,
-                     sizeof(unsigned int)*(mm.itri_end - mm.itri_start),
-                     GL_UNSIGNED_INT,
-                     (const void*)(sizeof(unsigned int)*mm.itri_start));
       
-      /*::glBegin(GL_TRIANGLES);
+      ::glBegin(GL_TRIANGLES);
       for (unsigned int itri = mm.itri_start; itri<mm.itri_end; itri++){
           //std::cout << "start: " << mm.itri_start << "end: " << mm.itri_end << std::endl;
           ::glTexCoord2dv(aTex.data() + aTri_Tex[itri*3+0] * 2);
@@ -378,7 +374,7 @@ void display(const std::vector<double>& aXYZ,
           ::glNormal3dv(aNrm.data() + aTri_Nrm[itri*3+2] * 3);
           ::glVertex3dv(aXYZ.data() + aTri_XYZ[itri*3+2] * 3);
       }
-      glEnd();*/
+      glEnd();
   }
 }
 
@@ -447,10 +443,10 @@ int main(void)
   if (!glfwInit())
     exit(EXIT_FAILURE);
     
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+//  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+//  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+//  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+//  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
     
   // ウィンドウ作成に失敗 -> 終了
@@ -467,71 +463,25 @@ int main(void)
       std::cout << "Failed to initialize GLAD" << std::endl;
       return -1;
   }
-    
-  //
-  glGenVertexArrays(1, &VAO);
-  glBindVertexArray(VAO);
-    
-  // バッファオブジェクトを作成し、データを送る
-  glGenBuffers(3, VBO_Tri);
-  glBindBuffer(GL_ARRAY_BUFFER, VBO_Tri[0]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(double)*aXYZ.size(), aXYZ.data(), GL_STATIC_DRAW);
-  glBindBuffer(GL_ARRAY_BUFFER, VBO_Tri[1]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(double)*aTex.size(), aTex.data(), GL_STATIC_DRAW);
-  glBindBuffer(GL_ARRAY_BUFFER, VBO_Tri[2]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(double)*aNrm.size(), aNrm.data(), GL_STATIC_DRAW);
-
-  // 頂点データ・法線データ・テクスチャ座標の配列を有効にする
-  glEnableVertexAttribArray(0);
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_INDEX_ARRAY);
-  glEnableClientState(GL_NORMAL_ARRAY);
-  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    
-  // 頂点データの場所を指定する
-  glBindBuffer(GL_ARRAY_BUFFER, VBO_Tri[0]);
-  glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, /*3*sizeof(double)*/0, (void*)0);
-  // テクスチャデータの場所を指定する
-  glBindBuffer(GL_ARRAY_BUFFER, VBO_Tri[1]);
-  glTexCoordPointer(2, GL_DOUBLE, /*3*sizeof(double)*/0, (void*)0);
-  // 法線データの場所を指定する
-  glBindBuffer(GL_ARRAY_BUFFER, VBO_Tri[2]);
-  glNormalPointer(GL_DOUBLE, 0, (void*)0);
-    
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
-    
-  //
-  {
-    glBindVertexArray(VAO);
-    glGenBuffers(1, &EBO_Tri);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_Tri);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*aTri_XYZ.size(), aTri_XYZ.data(), GL_STATIC_DRAW);
-  }
-    
-  //
+  
   {
       // vertex shader
       const char *glslvrt =
-      "#version 330 core\n"
-      "in vec3 inNormal;\n"
-      "out vec3 normal;\n"
-      "layout (location = 0) in vec3 aPos;\n"
+      "#version 120\n"
+      "varying vec3 normal;\n"
       "void main()\n"
       "{\n"
-      "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-      "   normal = inNormal;\n"
+      "   gl_Position = ftransform();\n"
+      "   normal = vec3(gl_NormalMatrix    * gl_Normal);\n"
       "}\0";
       
       // fragment shader
       const char *glslfrg =
-      "#version 330 core\n"
-      "in vec3 normal;\n"
-      "out vec3 FragColor;\n"
+      "#version 120\n"
+      "varying vec3 normal;\n"
       "void main()\n"
       "{\n"
-      "   FragColor = vec3(0.5*normal + 0.5);\n"
-      "   //FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
+      "   gl_FragColor = vec4(0.5*normal+0.5,1);\n"
       "}\n\0";
       
       // vertex shader
@@ -568,9 +518,10 @@ int main(void)
           glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
           std::cout << "ERROR::SHADER::PRORAM::LINKAGE_FAILED" << infoLog << std::endl;
       }
-      
+      std::cout << fragmentShader << " " << vertexShader << " shader program: " << shaderProgram << std::endl;
       glDeleteShader(vertexShader);
       glDeleteShader(fragmentShader);
+    
   }
         
   
@@ -643,8 +594,8 @@ int main(void)
     glTranslatef(0.0f, -0.5f, 0.0f);
       
     glUseProgram(shaderProgram);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_Tri);
+//    glBindVertexArray(VAO);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_Tri);
     
     display(aXYZ, aNrm, aTex,
             aTri_XYZ, aTri_Tex, aTri_Nrm,

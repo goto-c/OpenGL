@@ -359,7 +359,7 @@ void display(const std::vector<double>& aXYZ,
           }
       }
       
-      ::glBegin(GL_TRIANGLES);
+      ::glBegin(GL_TRIANGLES); // 描画ごとに頂点情報を送る（遅い）
       for (unsigned int itri = mm.itri_start; itri<mm.itri_end; itri++){
           //std::cout << "start: " << mm.itri_start << "end: " << mm.itri_end << std::endl;
           ::glTexCoord2dv(aTex.data() + aTri_Tex[itri*3+0] * 2);
@@ -384,9 +384,9 @@ void display(const std::vector<double>& aXYZ,
 int main(void)
 {
     
-  std::string path_obj = std::string(PATH_ROOT_DIR) + "/04_ShowObjWithShader/data/bug/data.obj";
-  std::string path_mtl = std::string(PATH_ROOT_DIR) + "/04_ShowObjWithShader/data/bug/data.mtl";
-  std::string path_dir = std::string(PATH_ROOT_DIR) + "/04_ShowObjWithShader/data/bug";
+  std::string path_obj = std::string(PATH_ROOT_DIR) + "/data/objInfo/bug/data.obj";
+  std::string path_mtl = std::string(PATH_ROOT_DIR) + "/data/objInfo/bug/data.mtl";
+  std::string path_dir = std::string(PATH_ROOT_DIR) + "/data/objInfo/bug";
     
   std::cout << path_obj << " " << path_mtl << std::endl;
     
@@ -443,6 +443,7 @@ int main(void)
   if (!glfwInit())
     exit(EXIT_FAILURE);
     
+    // 新しいものを使う場合、majorを4とかにする。
 //  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 //  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 //  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -465,6 +466,7 @@ int main(void)
   }
   
   {
+      // glsl version 120 shader toy
       // vertex shader
       const char *glslvrt =
       "#version 120\n"
@@ -474,6 +476,8 @@ int main(void)
       "   gl_Position = ftransform();\n"
       "   normal = vec3(gl_NormalMatrix    * gl_Normal);\n"
       "}\0";
+      // gl_NormalMatrixは回転行列
+      // ftransform()glVertexとかで送った情報に回転をかけたもの
       
       // fragment shader
       const char *glslfrg =
@@ -509,7 +513,7 @@ int main(void)
       }
       
       // link shader
-      shaderProgram = glCreateProgram();
+      shaderProgram = glCreateProgram(); //プログラムのIDを取得
       glAttachShader(shaderProgram, vertexShader);
       glAttachShader(shaderProgram, fragmentShader);
       glLinkProgram(shaderProgram);
@@ -593,7 +597,7 @@ int main(void)
     glRotatef(90, 0.0, 1.0, 0.0);
     glTranslatef(0.0f, -0.5f, 0.0f);
       
-    glUseProgram(shaderProgram);
+    glUseProgram(shaderProgram); //この後のglBegin, glEndには全てシェーダが適用される。0番は、デフォルトのシェーダ適用
 //    glBindVertexArray(VAO);
 //    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_Tri);
     

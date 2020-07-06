@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_CXX_FLAGS "-Wall -Wno-deprecated-declarations -g")
 
 # プロジェクト名を設定
-project(renderobj)
+project(03_ShowObj)
 
 add_definitions(-DPATH_ROOT_DIR="${PROJECT_SOURCE_DIR}/..")
 
@@ -16,10 +16,10 @@ add_definitions(-DPATH_ROOT_DIR="${PROJECT_SOURCE_DIR}/..")
 
 # glfw
 set(GLFW_LIBRARY
-  ../glfw/src/libglfw3.a)
+  ../3rd_party/glfw/src/libglfw3.a)
 get_filename_component(GLFW_LIBRARY ${GLFW_LIBRARY} ABSOLUTE)
 set(GLFW_INCLUDE_DIR
-  ../glfw/include)
+  ../3rd_party/glfw/include)
 
 # OpenGL
 find_package(OpenGL REQUIRED)
@@ -27,7 +27,8 @@ find_package(OpenGL REQUIRED)
 ############
 
 include_directories(
-  ${GLFW_INCLUDE_DIR})
+  ${GLFW_INCLUDE_DIR}
+  ../3rd_party)
 
 # ShowObjという実行ファイルをmain.cppから作成
 add_executable(${PROJECT_NAME}

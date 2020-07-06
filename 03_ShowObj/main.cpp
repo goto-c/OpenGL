@@ -373,9 +373,9 @@ void display(const std::vector<double>& aXYZ,
 int main(void)
 {
     
-  std::string path_obj = std::string(PATH_ROOT_DIR) + "/03_ShowObj/data/bug/data.obj";
-  std::string path_mtl = std::string(PATH_ROOT_DIR) + "/03_ShowObj/data/bug/data.mtl";
-  std::string path_dir = std::string(PATH_ROOT_DIR) + "/03_ShowObj/data/bug";
+  std::string path_obj = std::string(PATH_ROOT_DIR) + "/data/objInfo/bug/data.obj";
+  std::string path_mtl = std::string(PATH_ROOT_DIR) + "/data/objInfo/bug/data.mtl";
+  std::string path_dir = std::string(PATH_ROOT_DIR) + "/data/objInfo/bug";
     
   std::cout << path_obj << " " << path_mtl << std::endl;
     

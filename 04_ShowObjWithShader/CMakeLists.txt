@@ -42,6 +42,7 @@ include_directories(
 add_executable(${PROJECT_NAME}
   ${GLAD_INCLUDE_DIR}/glad/glad.h
   ${GLAD_SRC_DIR}/glad.c
+  ../3rd_party/objloader.cpp
   main.cpp)
 
 ###########

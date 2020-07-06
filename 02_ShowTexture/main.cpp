@@ -28,7 +28,7 @@ static void init(){
     
     int width, height;
     int channels;
-    unsigned char *img = stbi_load((std::string(PATH_ROOT_DIR)+"/data/pics/scene1.jpg").c_str(), &width, &height, &channels, 3);
+    unsigned char *img = stbi_load((std::string(PATH_ROOT_DIR)+"/test_data/pics/scene1.jpg").c_str(), &width, &height, &channels, 3);
     if (img==NULL) {
         std::cout << "Failed to get image" << std::endl;
         stbi_failure_reason();

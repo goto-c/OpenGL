@@ -32,7 +32,8 @@ include_directories(
 
 # ShowObjという実行ファイルをmain.cppから作成
 add_executable(${PROJECT_NAME}
-  main.cpp)
+  main.cpp
+  ../3rd_party/objloader.cpp)
 
 ###########
 

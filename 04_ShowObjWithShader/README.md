@@ -1,2 +1,2 @@
 # ShowObjWithShader  
-<img src="gif/progress.png">
+<img src="gif/normal.gif">

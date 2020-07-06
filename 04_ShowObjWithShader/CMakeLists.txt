@@ -39,10 +39,11 @@ include_directories(
   ../3rd_party)
 
 # ShowObjという実行ファイルをmain.cppから作成
+set(3RD_PARTY_DIR ../3rd_party)
 add_executable(${PROJECT_NAME}
   ${GLAD_INCLUDE_DIR}/glad/glad.h
   ${GLAD_SRC_DIR}/glad.c
-  ../3rd_party/objloader.cpp
+  ${3RD_PARTY_DIR}/objloader.cpp
   main.cpp)
 
 ###########

@@ -14,7 +14,7 @@
 
 #include "objloader.h"
 
-/* --------------- コールバック関数 ------------------*/
+/* --------------- callback ------------------*/
 
 static void error_callback(int error, const char* description){
   fputs(description, stderr);
@@ -30,7 +30,7 @@ void resize(int w, int h){
     glViewport(0, 0, w, h);
 }
 
-/* ------------------ ディスプレイ関数 -----------------*/
+/* ------------------ display -----------------*/
 
 int shaderProgram;
 unsigned int VAO;
@@ -88,7 +88,7 @@ void display(const std::vector<double>& aXYZ,
   }
 }
  
-/* ------------------ main 関数 --------------------*/
+/* ------------------ main --------------------*/
 
 int main(void)
 {

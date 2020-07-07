@@ -1,13 +1,10 @@
-# CMakeのバージョンを設定
 cmake_minimum_required(VERSION 2.8)
 
-# 使用する言語を設定
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_CXX_FLAGS "-Wall -Wno-deprecated-declarations -g")
 
-# プロジェクト名を設定
 project(03_ShowObj)
 
 add_definitions(-DPATH_ROOT_DIR="${PROJECT_SOURCE_DIR}/..")
@@ -26,14 +23,18 @@ find_package(OpenGL REQUIRED)
 
 ############
 
+set(3RD_PARTY_DIR ../3rd_party)
+set(OPENGL_SRC_DIR ../Opengl/src)
+
 include_directories(
   ${GLFW_INCLUDE_DIR}
-  ../3rd_party)
+  ${3RD_PARTY_DIR}
+  ${OPENGL_SRC_DIR})
 
 # ShowObjという実行ファイルをmain.cppから作成
 add_executable(${PROJECT_NAME}
   main.cpp
-  ../3rd_party/objloader.cpp)
+  ${OPENGL_SRC_DIR}/objloader.cpp)
 
 ###########
 

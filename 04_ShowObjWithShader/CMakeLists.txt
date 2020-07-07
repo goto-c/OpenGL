@@ -1,14 +1,11 @@
-# CMakeのバージョンを設定
 cmake_minimum_required(VERSION 2.8)
 
-# 使用する言語を設定
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 11) # version 11 以降のC++を使う宣言
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE) # C++ のstdライブラリを使う宣言
 set(CMAKE_CXX_FLAGS "-Wall -Wno-deprecated-declarations -g")
 # warningをどのくらい出すか -Wall->全てwarningを出す, -Wno-dep..->deprecatedは出さない。
 
-# プロジェクト名を設定
 project(04_ShowObjWithShader)
 
 add_definitions(-DPATH_ROOT_DIR="${PROJECT_SOURCE_DIR}/..")
@@ -33,17 +30,21 @@ find_package(OpenGL REQUIRED)
 
 ############
 
+set(OPENGL_SRC_DIR ../Opengl/src)
+set(3RD_PARTY_DIR ../3rd_party)
+
 include_directories(
   ${GLFW_INCLUDE_DIR}
   ${GLAD_INCLUDE_DIR}
-  ../3rd_party)
+  ${3RD_PARTY_DIR}
+  ${OPENGL_SRC_DIR})
 
 # ShowObjという実行ファイルをmain.cppから作成
 set(3RD_PARTY_DIR ../3rd_party)
 add_executable(${PROJECT_NAME}
   ${GLAD_INCLUDE_DIR}/glad/glad.h
   ${GLAD_SRC_DIR}/glad.c
-  ${3RD_PARTY_DIR}/objloader.cpp
+  ${OPENGL_SRC_DIR}/objloader.cpp
   main.cpp)
 
 ###########

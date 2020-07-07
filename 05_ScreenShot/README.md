@@ -1,2 +1,2 @@
-# ShowObjWithShader  
-<img src="gif/normal.gif">
+# ScreenShot  
+<img src="output/Screen_0.png">

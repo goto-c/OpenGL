@@ -329,6 +329,7 @@ int main(void)
                    width, height, 3,
                    pixel_data,
                    0);
+    stbi_flip_vertically_on_write(1);
     free(pixel_data);
       
     // カラーバッファを入れ替える

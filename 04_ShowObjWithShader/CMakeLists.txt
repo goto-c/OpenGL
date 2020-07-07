@@ -30,21 +30,20 @@ find_package(OpenGL REQUIRED)
 
 ############
 
-set(OPENGL_SRC_DIR ../Opengl/src)
 set(3RD_PARTY_DIR ../3rd_party)
 
 include_directories(
   ${GLFW_INCLUDE_DIR}
   ${GLAD_INCLUDE_DIR}
   ${3RD_PARTY_DIR}
-  ${OPENGL_SRC_DIR})
+  ../src)
 
 # ShowObjという実行ファイルをmain.cppから作成
 set(3RD_PARTY_DIR ../3rd_party)
 add_executable(${PROJECT_NAME}
   ${GLAD_INCLUDE_DIR}/glad/glad.h
   ${GLAD_SRC_DIR}/glad.c
-  ${OPENGL_SRC_DIR}/objloader.cpp
+  ../src/objloader.cpp
   main.cpp)
 
 ###########

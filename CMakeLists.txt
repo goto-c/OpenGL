@@ -4,6 +4,8 @@ project(OpenGL_Examples)
 
 add_subdirectory(00_HelloWorld)
 add_subdirectory(01_openwin)
+add_subdirectory(01_openwinNewGlad)
 add_subdirectory(02_ShowTexture)
 add_subdirectory(03_ShowObj)
 add_subdirectory(04_ShowObjWithShader)
+add_subdirectory(05_ScreenShot)

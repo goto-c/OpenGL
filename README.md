@@ -1,7 +1,7 @@
 # OpenGL Demo
 
 "OpenGL Demo" is a demonstration of showing object with OpenGL.
-Here is the used model throughout this project. (See License)  
+Here is the used model throughout this project. ([See License](https://poly.google.com/view/3WS86lkqYFy))  
 ![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/sample.gif)
 
 ## DEMO

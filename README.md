@@ -70,7 +70,13 @@ Clone OpenGL repository and update submodules by
 `cd OpenGL`  
 `git submodule update --init --recursive`  
   
+Compile glfw by  
+`cd 3rd_party/glfw`  
+`cmake .`  
+`make`  
+  
 Make build directory in OpenGL.  
+`cd ../../`  
 `mkdir build`  
 `cd build`  
   

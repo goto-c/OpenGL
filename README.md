@@ -77,7 +77,7 @@ Compile glfw by
   
 Make build directory in OpenGL.  
 `cd ../../`  
-`mkdir build`  
+`mkdir buil  
 `cd build`  
   
 Use cmake  

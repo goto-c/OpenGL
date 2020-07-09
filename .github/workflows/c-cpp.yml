@@ -25,7 +25,7 @@ jobs:
       run: cd 3rd_party/glfw
     - name: cmake
       run: cmake . --help-policy CMP0072
-    - name: make
+    - name: check
       run: |
         cd 3rd_party/glfw/src
         pwd
@@ -37,6 +37,6 @@ jobs:
     - name: cd->build
       run: cd build
     - name: cmake
-      run: cmake .
+      run: cmake . --help-policy CMP0072
     - name: make
       run: make

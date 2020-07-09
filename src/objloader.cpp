@@ -5,6 +5,8 @@
 #include <cmath>
 #include <string>
 #include <vector>
+#include <stdio.h>
+#include <string.h>
 #include "objloader.h"
 
 /* --------------- ***.obj loader --------------*/
@@ -23,7 +25,7 @@ std::vector<unsigned int> strip_slash(std::string s){
     int v_value = 0;
     int t_value = 0;
     int n_value = 0;
-    int idx = 0;
+    unsigned int idx = 0;
     
     // "***/***/***"の状態の文字列から、v,t,nの各インデックス文字列に分離する
     while (s[idx]!='/'){
@@ -42,17 +44,17 @@ std::vector<unsigned int> strip_slash(std::string s){
     }
     
     // インデックスの文字列を10進数に変換
-    for (int i=0; i<digits_v.size(); i++){
+    for (unsigned int i=0; i<digits_v.size(); i++){
         v_value +=
             std::pow(10, i)
             * (digits_v[digits_v.size() - 1 - i] - '0');
     }
-    for (int i=0; i<digits_t.size(); i++){
+    for (unsigned int i=0; i<digits_t.size(); i++){
         t_value +=
             std::pow(10, i)
             * (digits_t[digits_t.size() - 1 - i] - '0');
     }
-    for (int i=0; i<digits_n.size(); i++){
+    for (unsigned int i=0; i<digits_n.size(); i++){
         n_value +=
             std::pow(10, i)
             * (digits_n[digits_n.size() - 1 - i] - '0');

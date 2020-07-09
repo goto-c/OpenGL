@@ -25,6 +25,8 @@ jobs:
       run: git submodule update --init --recursive
     - name: cd->glfw
       run: cd 3rd_party/glfw
+    - name: check
+      run: pwd
     - name: cmake
       run: cmake .
     - name: make

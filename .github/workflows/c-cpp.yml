@@ -27,10 +27,9 @@ jobs:
       run: cmake . --help-policy CMP0072
     - name: make
       run: |
-        cd 3rd_party/glfw
+        cd 3rd_party/glfw/src
         pwd
         ls
-        make
     - name: cd
       run: cd ../../
     - name: mkdir

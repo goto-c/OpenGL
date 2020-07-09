@@ -18,7 +18,7 @@ jobs:
     - name: apt upgrade
       run: sudo apt upgrade
     - name: install
-      run: sudo apt-get install libglu1-mesa-dev mesa-common-dev freeglut3-dev
+      run: sudo apt-get install -y libx11-dev xorg-dev libglu1-mesa libglu1-mesa-dev libgl1-mesa-glx libgl1-mesa-dev
     - name: clone
       run: git clone https://github.com/goto-c/OpenGL.git
     - name: submodule

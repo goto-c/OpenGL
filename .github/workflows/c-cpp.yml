@@ -38,5 +38,10 @@ jobs:
       run: cd build
     - name: cmake
       run: cmake . --help-policy CMP0072
-    - name: make
-      run: make
+    - name: check
+      run: |
+        pwd
+        ls
+        cd build
+        pwd
+        ls

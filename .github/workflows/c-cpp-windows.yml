@@ -19,7 +19,6 @@ jobs:
       run: |
         cd 3rd_party/glfw
         cmake .
-        make
     - name: mkdir build
       run: mkdir build
     - name: cmake

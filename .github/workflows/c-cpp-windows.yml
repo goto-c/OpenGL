@@ -25,7 +25,12 @@ jobs:
       run: |
         cd build
         cmake ..
-    - name: make
+    - name: check
       run: |
         cd build
-        make
+        pwd
+        ls
+
+        cmake .w
+        cmake .d
+        cmake .

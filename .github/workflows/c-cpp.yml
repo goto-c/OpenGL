@@ -13,6 +13,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: apt update
+      run: sudo apt update
+    - name: apt upgrade
+      run: sudo apt upgrade
+    - name: install
+      run: sudo apt-get install libglu1-mesa-dev mesa-common-dev freeglut3-dev
     - name: clone
       run: git clone https://github.com/goto-c/OpenGL.git
     - name: submodule

@@ -20,7 +20,7 @@ class CMaterialMap {
     std::string name;
     unsigned int itri_start;
     unsigned int itri_end;
-    int iMaterialInfo;
+    unsigned int iMaterialInfo;
 };
 
 // strip_slash for read_obj

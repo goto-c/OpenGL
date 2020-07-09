@@ -51,7 +51,7 @@ void display(const std::vector<double>& aXYZ,
 //  glUseProgram(0);
   ::glEnable(GL_LIGHTING);
   for (const auto& mm : aMtlMap){ // mmにマテリアルマップを保存
-      int imi = mm.iMaterialInfo;
+      unsigned int imi = mm.iMaterialInfo;
       if (imi < 0 || imi >= aMtlInfo.size()){
           ::glDisable(GL_TEXTURE_2D);
           const GLfloat color_white[] = { 1.0, 1.0, 1.0, 1.0 };

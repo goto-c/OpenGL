@@ -31,10 +31,10 @@ int main(void)
   glfwSetKeyCallback(window, key_callback);
   while (!glfwWindowShouldClose(window))
   {
-    float ratio; //~54 図形を描画
+    //float ratio; //~54 図形を描画
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
-    ratio = width / (float) height;
+    //ratio = width / (float) height;
     
     glfwSwapBuffers(window);
     glfwPollEvents();

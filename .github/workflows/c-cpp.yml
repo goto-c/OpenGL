@@ -26,7 +26,7 @@ jobs:
     - name: check
       run: pwd
     - name: cmake
-      run: cmake .
+      run: cmake . --help-policy CMP0072
     - name: make
       run: make
     - name: cd

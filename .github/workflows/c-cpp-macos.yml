@@ -24,4 +24,6 @@ jobs:
         pwd
         ls
     - name: cmake
-      run: cmake -G Xcode ..
+      run: |
+        cd build
+        cmake -G Xcode ..

@@ -34,4 +34,4 @@ jobs:
         mkdir build
         cd build
         cmake -Wno-dev ..
-        cmake --build ..
+        cmake --build .

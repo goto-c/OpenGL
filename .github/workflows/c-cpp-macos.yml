@@ -19,5 +19,9 @@ jobs:
       run: mkdir build
     - name: cd
       run: cd build
+    - name: check
+      run: |
+        pwd
+        ls
     - name: cmake
       run: cmake -G Xcode ..

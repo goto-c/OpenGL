@@ -26,12 +26,12 @@ jobs:
     - name: compile glfw
       run: |
         cd 3rd_party/glfw
-        cmake . --help-policy CMP0072
-        make
+        cmake .
+        make --build .
         
     - name: build examples
       run: |
         mkdir build
         cd build
-        cmake . --help-policy CMP0072
-        cmake --build .
+        cmake ..
+        cmake --build ..

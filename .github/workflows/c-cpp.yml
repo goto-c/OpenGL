@@ -13,35 +13,25 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      
     - name: apt update
       run: sudo apt update
     - name: apt upgrade
       run: sudo apt upgrade
     - name: install
       run: sudo apt-get install -y libx11-dev xorg-dev libglu1-mesa libglu1-mesa-dev libgl1-mesa-glx libgl1-mesa-dev
+      
     - name: submodule
       run: git submodule update --init --recursive
-    - name: cd->glfw
-      run: cd 3rd_party/glfw
-    - name: cmake
-      run: cmake . --help-policy CMP0072
-    - name: check
+    - name: compile glfw
       run: |
-        cd 3rd_party/glfw/src
-        pwd
-        ls
-    - name: cd
-      run: cd ../../
-    - name: mkdir
-      run: mkdir build
-    - name: cd->build
-      run: cd build
-    - name: cmake
-      run: cmake . --help-policy CMP0072
-    - name: check
+        cd 3rd_party/glfw
+        cmake . --help-policy CMP0072
+        make
+        
+    - name: build examples
       run: |
-        pwd
-        ls
+        mkdir build
         cd build
-        pwd
-        ls
+        cmake . --help-policy CMP0072
+        cmake --build .

@@ -3,7 +3,11 @@ cmake_minimum_required(VERSION 2.8)
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-set(CMAKE_CXX_FLAGS "-Wall -Wno-deprecated-declarations -g")
+
+IF(MSVC)
+ELSE()
+  set(CMAKE_CXX_FLAGS "-Wall -Wno-deprecated-declarations -g")
+ENDIF()
 
 project(03_ShowObj)
 
@@ -30,20 +34,30 @@ include_directories(
   ${3RD_PARTY_DIR}
   ../src)
 
-# ShowObjという実行ファイルをmain.cppから作成
 add_executable(${PROJECT_NAME}
   main.cpp
   ../src/objloader.cpp)
 
 ###########
 
-find_library( COCOA_LIBRARY Cocoa )
-find_library( IOKIT_LIBRARY IOKit )
-find_library( COREVIDEO_LIBRARY CoreVideo )
-target_link_libraries(${PROJECT_NAME}
-  ${OPENGL_LIBRARY}
-  ${GLFW_LIBRARY}
-  ${COCOA_LIBRARY}
-  ${IOKIT_LIBRARY}
-  ${COREVIDEO_LIBRARY}
-)
+IF(APPLE)
+  find_library( COCOA_LIBRARY Cocoa )
+  find_library( IOKIT_LIBRARY IOKit )
+  find_library( COREVIDEO_LIBRARY CoreVideo )
+  target_link_libraries(${PROJECT_NAME}
+    ${OPENGL_LIBRARY}
+    ${GLFW_LIBRARY}
+    ${COCOA_LIBRARY}
+    ${IOKIT_LIBRARY}
+    ${COREVIDEO_LIBRARY}
+  )
+ELSEIF(UNIX)
+  target_link_libraries(${PROJECT_NAME}
+    ${OPENGL_LIBRARY}
+    ${GLFW_LIBRARY}
+    -lrt -lm -ldl -lX11 -lpthread -lxcb -lXau -lXdmcp)
+ELSEIF(MSVC)
+  target_link_libraries(${PROJECT_NAME}
+    ${OPENGL_LIBRARY}
+    ${GLFW_LIBRARY})
+ENDIF()

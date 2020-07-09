@@ -3,8 +3,12 @@ cmake_minimum_required(VERSION 2.8)
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 11) # version 11 以降のC++を使う宣言
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE) # C++ のstdライブラリを使う宣言
-set(CMAKE_CXX_FLAGS "-Wall -Wno-deprecated-declarations -g")
-# warningをどのくらい出すか -Wall->全てwarningを出す, -Wno-dep..->deprecatedは出さない。
+
+IF(MSVC)
+ELSE()
+  set(CMAKE_CXX_FLAGS "-Wall -Wno-deprecated-declarations -g")
+  # warningをどのくらい出すか -Wall->全てwarningを出す, -Wno-dep..->deprecatedは出さない。
+ENDIF()
 
 project(05_ScreenShot)
 
@@ -38,8 +42,6 @@ include_directories(
   ${3RD_PARTY_DIR}
   ../src)
 
-# ShowObjという実行ファイルをmain.cppから作成
-set(3RD_PARTY_DIR ../3rd_party)
 add_executable(${PROJECT_NAME}
   ${GLAD_INCLUDE_DIR}/glad/glad.h
   ${GLAD_SRC_DIR}/glad.c
@@ -48,13 +50,24 @@ add_executable(${PROJECT_NAME}
 
 ###########
 
-find_library( COCOA_LIBRARY Cocoa )
-find_library( IOKIT_LIBRARY IOKit )
-find_library( COREVIDEO_LIBRARY CoreVideo )
-target_link_libraries(${PROJECT_NAME}
-  ${OPENGL_LIBRARY}
-  ${GLFW_LIBRARY}
-  ${COCOA_LIBRARY}
-  ${IOKIT_LIBRARY}
-  ${COREVIDEO_LIBRARY}
-)
+IF(APPLE)
+  find_library( COCOA_LIBRARY Cocoa )
+  find_library( IOKIT_LIBRARY IOKit )
+  find_library( COREVIDEO_LIBRARY CoreVideo )
+  target_link_libraries(${PROJECT_NAME}
+    ${OPENGL_LIBRARY}
+    ${GLFW_LIBRARY}
+    ${COCOA_LIBRARY}
+    ${IOKIT_LIBRARY}
+    ${COREVIDEO_LIBRARY}
+  )
+ELSEIF(UNIX)
+  target_link_libraries(${PROJECT_NAME}
+    ${OPENGL_LIBRARY}
+    ${GLFW_LIBRARY}
+    -lrt -lm -ldl -lX11 -lpthread -lxcb -lXau -lXdmcp)
+ELSEIF(MSVC)
+  target_link_libraries(${PROJECT_NAME}
+    ${OPENGL_LIBRARY}
+    ${GLFW_LIBRARY})
+ENDIF()

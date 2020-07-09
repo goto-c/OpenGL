@@ -30,7 +30,3 @@ jobs:
         cd build
         pwd
         ls
-
-        cmake .w
-        cmake .d
-        cmake .

@@ -20,13 +20,11 @@ jobs:
       run: |
         cd 3rd_party/glfw
         cmake .
-        pwd
-        ls
-        make
+        cmake --build
         
     - name: build examples
       run: |
         mkdir build
         cd build
         cmake ..
-        make --build .
+        cmake --build .

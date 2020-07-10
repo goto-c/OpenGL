@@ -16,8 +16,11 @@ add_definitions(-DPATH_ROOT_DIR="${PROJECT_SOURCE_DIR}/..")
 ############
 
 # glfw
-set(GLFW_LIBRARY
-  ../3rd_party/glfw/src/libglfw3.a)
+IF(MSVC)
+  set(GLFW_LIBRARY    ../3rd_party/glfw/src/Release/glfw3.lib)
+ELSE()
+  set(GLFW_LIBRARY    ../3rd_party/glfw/src/libglfw3.a)
+ENDIF()
 get_filename_component(GLFW_LIBRARY ${GLFW_LIBRARY} ABSOLUTE)
 set(GLFW_INCLUDE_DIR
   ../3rd_party/glfw/include)

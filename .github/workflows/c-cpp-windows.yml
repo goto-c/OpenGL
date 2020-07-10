@@ -13,19 +13,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: apt update
-      run: sudo apt update
-    - name: apt upgrade
-      run: sudo apt upgrade
-    - name: install doxygen
-      run: sudo apt-get install doxygen
+
     - name: submodule
       run: git submodule update --init --recursive
     - name: compile glfw
       run: |
         cd 3rd_party/glfw
         cmake .
+        pwd
+        ls
         make
+        
     - name: build examples
       run: |
         mkdir build

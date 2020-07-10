@@ -222,8 +222,8 @@ void read_mtl(std::vector<CMaterialInfo>& aMat,
         // 環境光・拡散光・鏡面光のRGB値を構造体のメンバに追加
         if (buff[1]=='K' && buff[2]=='a'){
             char str[256];
-            double r, g, b;
-            sscanf(buff, "%s %lf %lf %lf", str, &r, &g, &b);
+            float r, g, b;
+            sscanf(buff, "%s %f %f %f", str, &r, &g, &b);
             mi.Ka[0] = r;
             mi.Ka[1] = g;
             mi.Ka[2] = b;
@@ -231,8 +231,8 @@ void read_mtl(std::vector<CMaterialInfo>& aMat,
         }
         if (buff[1]=='K' && buff[2]=='d'){
             char str[256];
-            double r, g, b;
-            sscanf(buff, "%s %lf %lf %lf", str, &r, &g, &b);
+            float r, g, b;
+            sscanf(buff, "%s %f %f %f", str, &r, &g, &b);
             mi.Kd[0] = r;
             mi.Kd[1] = g;
             mi.Kd[2] = b;
@@ -241,8 +241,8 @@ void read_mtl(std::vector<CMaterialInfo>& aMat,
         }
         if (buff[1]=='K' && buff[2]=='s'){
             char str[256];
-            double r, g, b;
-            sscanf(buff, "%s %lf %lf %lf", str, &r, &g, &b);
+            float r, g, b;
+            sscanf(buff, "%s %f %f %f", str, &r, &g, &b);
             mi.Ks[0] = r;
             mi.Ks[1] = g;
             mi.Ks[2] = b;

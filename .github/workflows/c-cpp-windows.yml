@@ -19,20 +19,12 @@ jobs:
     - name: compile glfw
       run: |
         cd 3rd_party/glfw
-        git clone https://github.com/doxygen/doxygen.git
-        cd doxygen
-        mkdir build
-        cd build
-        cmake -G "Unix Makefiles" ..
-        make
-        make install
-        cd ../../
-        cmake .
-        make -f Makefile
+        cmake . -A x64
+        cmake --build . --config Release
         
     - name: build examples
       run: |
         mkdir build
         cd build
-        cmake ..
-        cmake --build .
+        cmake -A x64 -DUSE_HEADERONLY=ON ..
+        cmake --build . --config Release

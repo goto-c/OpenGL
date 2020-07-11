@@ -11,7 +11,6 @@ This demonstration uses the model downloaded [here](https://poly.google.com/view
 ## Main project 【03_ShowObj】
 
 The main project of this repository is 03_ShowObj. This project shows the full image of obj file.
-The result of the latest version is demonstrated as "3rd ::: texture".  
   
 ![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug.gif)
 #### ■1st : Vertex  

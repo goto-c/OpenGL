@@ -1,3 +1,7 @@
+![C/C++ CI](https://github.com/goto-c/OpenGL/workflows/C/C++%20CI/badge.svg)
+![C/C++ CI](https://github.com/goto-c/OpenGL/workflows/C/C++%20CI/badge.svg)
+![C/C++ CI](https://github.com/goto-c/OpenGL/workflows/C/C++%20CI/badge.svg)
+
 # OpenGL Demo
 
 "OpenGL Demo" is a demonstration of showing object with OpenGL.

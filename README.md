@@ -94,7 +94,10 @@ Open the project file, then you can try every project.
 
 ## Note
 
-I tested environments under Mac, not under Linux and Windows.
+I tested environments under Mac, not under Linux and Windows.  
+If you are a windows or Linux user, following scripts will help you.  
+[!For windows users](https://github.com/goto-c/OpenGL/blob/master/.github/workflows/c-cpp-windows.yml)  
+[!For Linux users](https://github.com/goto-c/OpenGL/blob/master/.github/workflows/c-cpp.yml)
 
 ## License
 

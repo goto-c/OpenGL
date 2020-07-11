@@ -1,10 +1,8 @@
-![C/C++ CI](https://github.com/goto-c/OpenGL/workflows/C/C++%20CI/badge.svg)
-![C/C++ CI](https://github.com/goto-c/OpenGL/workflows/C/C++%20CI/badge.svg)
-![C/C++ CI](https://github.com/goto-c/OpenGL/workflows/C/C++%20CI/badge.svg)
+![GitHub Actions](https://github.com/goto-c/OpenGL/workflows/C/C++%20CI/badge.svg)
 
 # OpenGL Demo
 
-"OpenGL Demo" is a demonstration of showing object with OpenGL.
+"OpenGL Demo" is a demonstration of showing object with OpenGL.  
 Here is the used model throughout this project. ([See License](https://poly.google.com/view/3WS86lkqYFy))  
 ![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/sample.gif)
 

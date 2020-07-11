@@ -1,5 +1,5 @@
 # OpenGL Demo
-<img src="sample.gif" width=500px>
+<img src="sample.gif" width=850px>
 
 "OpenGL Demo" is a demonstration of showing objects with OpenGL.  
 This demonstration uses the model downloaded [here](https://poly.google.com/view/3WS86lkqYFy).  

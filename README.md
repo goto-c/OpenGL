@@ -8,28 +8,24 @@ This demonstration uses the model downloaded [here](https://poly.google.com/view
 
 [![C/C++ CI](https://github.com/goto-c/OpenGL/workflows/C/C++%20CI/badge.svg)](https://github.com/goto-c/OpenGL/actions)
 
-## DEMO
+## Main project 【03_ShowObj】
 
 The main project of this repository is 03_ShowObj. This project shows the full image of obj file.
 The result of the latest version is demonstrated as "3rd ::: texture".  
   
-#### 1st ::: Vertex
+#### 1st ::: Vertex  
+![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug.gif)   
 Firstly I show the image without normal/texture data.  This image is mapped only eith the vertices information.  
 
-![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug.gif) 
-
-#### 2nd ::: Normal
+#### 2nd ::: Normal  
+![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug_shade.gif)  
 Next step is shading.  By using normal vector data,  the object is added its shades.  
 
-![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug_shade.gif)
-
-#### 3rd ::: Texture
-Finally, texture is added to the object by using texture coordinates and the material information in "bug.mtl" file.
-
+#### 3rd ::: Texture  
 ![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug_full.gif)  
+Finally, texture is added to the object by using texture coordinates and the material information in "bug.mtl" file.
   
-  
-## Overview
+## Quick Overview
   
 ### 00_HelloWorld 
 Just prints "Hello World"
@@ -96,8 +92,7 @@ Open the project file, then you can try every project.
 
 I tested environments under Mac, not under Linux and Windows.  
 If you are a windows or Linux user, following scripts will help you.  
-[!For windows users](https://github.com/goto-c/OpenGL/blob/master/.github/workflows/c-cpp-windows.yml)  
-[!For Linux users](https://github.com/goto-c/OpenGL/blob/master/.github/workflows/c-cpp.yml)
+For [Windows](https://github.com/goto-c/OpenGL/blob/master/.github/workflows/c-cpp-windows.yml) / For [Linux](https://github.com/goto-c/OpenGL/blob/master/.github/workflows/c-cpp.yml)  
 
 ## License
 

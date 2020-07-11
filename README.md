@@ -1,4 +1,4 @@
-![GitHub Actions](https://github.com/goto-c/OpenGL/workflows/C/C++%20CI/badge.svg)
+[![C/C++ CI](https://github.com/goto-c/OpenGL/workflows/C/C++%20CI/badge.svg)](https://github.com/goto-c/OpenGL/actions)
 
 # OpenGL Demo
 

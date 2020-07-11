@@ -1,7 +1,7 @@
 # OpenGL Demo
-![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/sample.gif)  
+<img src="sample.gif" width=500px>
 
-"OpenGL Demo" is a demonstration of showing object with OpenGL.  
+"OpenGL Demo" is a demonstration of showing objects with OpenGL.  
 This demonstration uses the model downloaded [here](https://poly.google.com/view/3WS86lkqYFy).  
 
 <a href="http://doge.mit-license.org"><img src="http://img.shields.io/:license-mit-blue.svg"></a>  

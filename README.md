@@ -1,28 +1,30 @@
-[![C/C++ CI](https://github.com/goto-c/OpenGL/workflows/C/C++%20CI/badge.svg)](https://github.com/goto-c/OpenGL/actions)
-
 # OpenGL Demo
+![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/sample.gif)  
 
 "OpenGL Demo" is a demonstration of showing object with OpenGL.  
-Here is the used model throughout this project. ([See License](https://poly.google.com/view/3WS86lkqYFy))  
-![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/sample.gif)
+This demonstration uses the model downloaded [here](https://poly.google.com/view/3WS86lkqYFy).  
+
+<a href="http://doge.mit-license.org"><img src="http://img.shields.io/:license-mit-blue.svg"></a>  
+
+[![C/C++ CI](https://github.com/goto-c/OpenGL/workflows/C/C++%20CI/badge.svg)](https://github.com/goto-c/OpenGL/actions)
 
 ## DEMO
 
-03_ShowObj is the main project. This project shows the full image of obj file.
-3rd stage demonstrated below is the latest version.  
+The main project of this repository is 03_ShowObj. This project shows the full image of obj file.
+The result of the latest version is demonstrated as "3rd stage".  
   
 #### 1st stage ::: vertex
-Firstly I showed the image without normal/texture data.  This image is mapped only eith the vertices information.  
+Firstly I show the image without normal/texture data.  This image is mapped only eith the vertices information.  
 
 ![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug.gif) 
 
 #### 2nd stage ::: normal
-Next step is the shading.  By using normal vector data,  object was added its shades.  
+Next step is shading.  By using normal vector data,  the object is added its shades.  
 
 ![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug_shade.gif)
 
 #### 3rd stage ::: texture
-Finally, texture has been added to the object by using texture coordinates and the material information in "bug.mtl" file.
+Finally, texture is added to the object by using texture coordinates and the material information in "bug.mtl" file.
 
 ![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug_full.gif)  
   
@@ -30,7 +32,7 @@ Finally, texture has been added to the object by using texture coordinates and t
 ## Overview
   
 ### 00_HelloWorld 
-Just says "Hello World"
+Just prints "Hello World"
 
 ### 01_openwin
 <img src="01_openwin/thumbnail.gif" width=220px>
@@ -67,6 +69,8 @@ You can also install GLFW in [this page](https://www.glfw.org), GLAD in [this pa
 
 ## Usage
 
+For Mac  
+  
 Clone OpenGL repository and update submodules by  
 `git clone https://github.com/goto-c/OpenGL.git`  
 `cd OpenGL`  

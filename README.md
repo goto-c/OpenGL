@@ -11,19 +11,19 @@ This demonstration uses the model downloaded [here](https://poly.google.com/view
 ## DEMO
 
 The main project of this repository is 03_ShowObj. This project shows the full image of obj file.
-The result of the latest version is demonstrated as "3rd stage".  
+The result of the latest version is demonstrated as "3rd ::: texture".  
   
-#### 1st stage ::: vertex
+#### 1st ::: Vertex
 Firstly I show the image without normal/texture data.  This image is mapped only eith the vertices information.  
 
 ![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug.gif) 
 
-#### 2nd stage ::: normal
+#### 2nd ::: Normal
 Next step is shading.  By using normal vector data,  the object is added its shades.  
 
 ![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug_shade.gif)
 
-#### 3rd stage ::: texture
+#### 3rd ::: Texture
 Finally, texture is added to the object by using texture coordinates and the material information in "bug.mtl" file.
 
 ![demo](https://github.com/goto-c/OpenGL/blob/master/03_ShowObj/gif/bug_full.gif)  

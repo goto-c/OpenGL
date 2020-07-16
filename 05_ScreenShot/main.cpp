@@ -15,6 +15,7 @@
 #include "stb_image_write.h"
 
 #include "objloader.h"
+#include "shader.h"
 
 /* --------------- callback ------------------*/
 
@@ -33,11 +34,6 @@ void resize(int w, int h){
 }
 
 /* ------------------ display -----------------*/
-
-int shaderProgram;
-unsigned int VAO;
-unsigned int VBO_Tri[3];
-unsigned int EBO_Tri;
 
 void display(const std::vector<double>& aXYZ,
              const std::vector<double>& aNrm,
@@ -117,12 +113,6 @@ int main(void)
            path_obj);
   std::cout << "obj file loading succeeded " << std::endl;
     
-  /*for (int i=0; i<aXYZ.size()/3; i++){
-      std::cout << aXYZ[3*i] << ", " << aXYZ[3*i+1] << ", " << aXYZ[3*i+2] << std::endl;
-  }
-  for (int i=0; i<aTri_XYZ.size()/3; i++){
-      std::cout << aTri_XYZ[3*i] << ", " << aTri_XYZ[3*i+1] << ", " << aTri_XYZ[3*i+2] << std::endl;
-  }*/
   std::cout << "number of vertices : " << aXYZ.size()/3 << std::endl;
   std::cout << "number of faces    : " << aTri_XYZ.size()/3 << std::endl;
   /* --------------------------- */
@@ -177,66 +167,9 @@ int main(void)
   }
   
   {
-      // glsl version 120
-      // vertex shader
-      const char *glslvrt =
-      "#version 120\n"
-      "varying vec3 normal;\n"
-      "void main()\n"
-      "{\n"
-      "   gl_Position = ftransform();\n"
-      "   normal = vec3(gl_NormalMatrix    * gl_Normal);\n"
-      "}\0";
-      // gl_NormalMatrixは回転行列
-      // ftransform()glVertexなどのコマンドで送った情報に回転行列をかけたもの
-      
-      // fragment shader
-      const char *glslfrg =
-      "#version 120\n"
-      "varying vec3 normal;\n"
-      "void main()\n"
-      "{\n"
-      "   gl_FragColor = vec4(0.5*normal+0.5,1);\n"
-      "}\n\0";
-      
-      // vertex shader
-      int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-      glShaderSource(vertexShader, 1, &glslvrt, nullptr);
-      glCompileShader(vertexShader);
-      int success;
-      char infoLog[512];
-      glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-      if (!success)
-      {
-          glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-          std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED" << infoLog << std::endl;
-      }
-      
-      // fragment shader
-      int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-      glShaderSource(fragmentShader, 1, &glslfrg, nullptr);
-      glCompileShader(fragmentShader);
-      glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-      if (!success)
-      {
-          glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-          std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED" << infoLog << std::endl;
-      }
-      
-      // link shader
-      shaderProgram = glCreateProgram(); //プログラムのIDを取得
-      glAttachShader(shaderProgram, vertexShader);
-      glAttachShader(shaderProgram, fragmentShader);
-      glLinkProgram(shaderProgram);
-      glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-      if(!success){
-          glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
-          std::cout << "ERROR::SHADER::PRORAM::LINKAGE_FAILED" << infoLog << std::endl;
-      }
-      std::cout << fragmentShader << " " << vertexShader << " shader program: " << shaderProgram << std::endl;
-      glDeleteShader(vertexShader);
-      glDeleteShader(fragmentShader);
-    
+      std::string vrt_path = std::string(PATH_ROOT_DIR) + "/test_data/normalmap.vert";
+      std::string frg_path = std::string(PATH_ROOT_DIR) + "/test_data/normalmap.frag";
+      use_shader(vrt_path, frg_path);
   }
         
   
@@ -307,7 +240,7 @@ int main(void)
     glRotatef(90, 0.0, 1.0, 0.0);
     glTranslatef(0.0f, -0.5f, 0.0f);
       
-    glUseProgram(shaderProgram);
+    //glUseProgram(shaderProgram);
       //この後のglBegin, glEndには全てシェーダが適用される。0番を指定した場合は、デフォルトのシェーダを適用
 //    glBindVertexArray(VAO);
 //    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_Tri);

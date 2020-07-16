@@ -49,6 +49,7 @@ add_executable(${PROJECT_NAME}
   ${GLAD_INCLUDE_DIR}/glad/glad.h
   ${GLAD_SRC_DIR}/glad.c
   ../src/objloader.cpp
+  ../src/shader.cpp
   main.cpp)
 
 ###########

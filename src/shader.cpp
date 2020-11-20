@@ -26,6 +26,8 @@ std::string read_shader_file(std::string &f)
     }
     source.pop_back();
     source += "\0";
+    
+    fin.close();
 
     return source;
 }
@@ -91,6 +93,6 @@ int use_shader(std::string &vrt_path,
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
     
-    glUseProgram(shaderProgram);
-    return -1;
+    //glUseProgram(shaderProgram);
+    return shaderProgram;
 }

@@ -184,6 +184,75 @@ void read_obj(std::vector<double>& aXYZ,
     aMaterialMap[aMaterialMap.size()-1].itri_end = aTri_XYZ.size()/3;
 }
 
+void read_obj(std::vector<double>& aXYZ,
+              std::vector<unsigned int>& aTri_XYZ,
+              const std::string& file_obj)
+{
+    std::ifstream fin;
+    fin.open(file_obj);
+    if (fin.fail())
+        std::cout << "obj file open failed" << std::endl;
+    
+    aXYZ.clear();
+    aTri_XYZ.clear();
+    
+    const int BUFF_SIZE = 256;
+    char buff[BUFF_SIZE];
+    
+    while(!fin.eof()){
+        fin.getline(buff, BUFF_SIZE);
+        
+        // 先頭が'v'の場合
+        if (buff[0]=='v' && buff[1]==' '){
+            char str[256];
+            double x, y, z;
+            sscanf(buff, "%s %lf %lf %lf", str, &x, &y, &z);
+            aXYZ.push_back(x);
+            aXYZ.push_back(y);
+            aXYZ.push_back(z);
+        }
+        // 先頭が'f'の場合
+        if (buff[0]=='f'){
+            char str[256];
+            unsigned int i0, i1, i2;
+            sscanf(buff, "%s %u %u %u", str, &i0, &i1, &i2);
+            aTri_XYZ.push_back(i0-1);
+            aTri_XYZ.push_back(i1-1);
+            aTri_XYZ.push_back(i2-1);
+        }
+    }
+    fin.close();
+}
+
+void read_flag(std::vector<unsigned int>& flag,
+               const std::string& file_flag)
+{
+    flag.clear();
+    std::cout << "initial flag size: " << flag.size() << std::endl;
+    
+    std::ifstream fin;
+    fin.open(file_flag);
+    if (fin.fail()) {
+        std::cout << "flag file open failed" << std::endl;
+    }
+    else {
+        std::cout << "flag file: " << file_flag << std::endl;
+    }
+    
+    const int BUFF_SIZE = 256;
+    char buff[BUFF_SIZE];
+    while (!fin.eof()) {
+        fin.getline(buff, BUFF_SIZE);
+        
+        int i = 0;
+        while (buff[i] != ' ') {
+            i++;
+        }
+        i++;
+        flag.push_back(buff[i] - '0');
+    }
+    fin.close();
+}
 
 /* ----------------- ***.mtl loader ---------------*/
 

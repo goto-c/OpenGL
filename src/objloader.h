@@ -35,5 +35,12 @@ std::vector<unsigned int>& aTri_Nrm,
 std::vector<CMaterialMap>& aMaterialMap,
 const std::string& file_obj);
 
+void read_obj(std::vector<double>& aXYZ,
+              std::vector<unsigned int>& aTri_XYZ,
+              const std::string& file_obj)
+
+void read_flag(std::vector<unsigned int>& flag,
+               const std::string& file_flag)
+
 void read_mtl(std::vector<CMaterialInfo>& aMat,
 const std::string& file_mtl);

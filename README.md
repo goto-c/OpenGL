@@ -67,20 +67,26 @@ You can also install GLFW [here](https://www.glfw.org), GLAD [here](https://glad
 For Mac  
   
 Clone OpenGL repository and update submodules with  
-`git clone https://github.com/goto-c/OpenGL.git`  
-`cd OpenGL`  
-`git submodule update --init --recursive`  
+```
+git clone https://github.com/goto-c/OpenGL.git
+cd OpenGL 
+git submodule update --init --recursive
+```
   
 Compile glfw with  
-`cd 3rd_party/glfw`  
-`cmake .`  
-`make`  
+```
+cd 3rd_party/glfw
+cmake .  
+make
+```
   
 Make build directory in OpenGL.  
-`cd ../../`  
-`mkdir buil  
-`cd build`  
-  
+```
+cd ../../  
+mkdir build  
+cd build
+``` 
+ 
 Use cmake  
 `cmake -G Xcode ..`  
 

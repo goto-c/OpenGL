@@ -46,7 +46,7 @@ jobs:
     - name: compile glfw
       run: |
         cd 3rd_party/glfw
-        cmake -pthread .
+        cmake .
         make
         
     - name: build examples

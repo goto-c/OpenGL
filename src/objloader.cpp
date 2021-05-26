@@ -12,7 +12,8 @@
 /* --------------- ***.obj loader --------------*/
 
 std::vector<unsigned int> strip_slash(std::string s){
-    
+//    std::cout << "s : " << s << std::endl;
+//    std::cout << "s.size() : " << s.size() << std::endl;
     std::vector<unsigned int> vtn_values;
     vtn_values.clear();
     
@@ -33,8 +34,9 @@ std::vector<unsigned int> strip_slash(std::string s){
         idx++;
     }
     idx++;
-    while (s[idx]!='/'){
+    while (s[idx]!='/' && idx < s.size()){
         digits_t.push_back(s[idx]);
+//        std::cout << "idx : " << idx << ", " << "t <- s[idx] : " << s[idx] << std::endl;
         idx++;
     }
     idx++;
@@ -42,7 +44,15 @@ std::vector<unsigned int> strip_slash(std::string s){
         digits_n.push_back(s[idx]);
         idx++;
     }
-    
+//    std::cout << "digits_v.size() : " << digits_v.size() << std::endl;
+//    for (int i=0; i<digits_v.size(); i++){
+//        std::cout << "digits_v : " << digits_v[i] << std::endl;
+////        std::cout << "digits_n : " << digits_n[i] << std::endl;
+//    }
+//    std::cout << "digits_t.size() : " << digits_t.size() << std::endl;
+//    for (int i=0; i<digits_t.size(); i++){
+//        std::cout << "digits_t : " << digits_t[i] << std::endl;
+//    }
     // インデックスの文字列を10進数に変換
     for (unsigned int i=0; i<digits_v.size(); i++){
         v_value +=
@@ -59,7 +69,7 @@ std::vector<unsigned int> strip_slash(std::string s){
             std::pow(10, i)
             * (digits_n[digits_n.size() - 1 - i] - '0');
     }
-    
+//    std::cout << "t_value : " << t_value << std::endl;
     vtn_values.push_back(v_value);
     vtn_values.push_back(t_value);
     vtn_values.push_back(n_value);
@@ -148,6 +158,10 @@ void read_obj(std::vector<double>& aXYZ,
             vertex0 = strip_slash(i0);
             vertex1 = strip_slash(i1);
             vertex2 = strip_slash(i2);
+//            std::cout << "vertex0 : " << vertex0[0] << ", " << vertex0[1] << ", " << vertex0[2] << std::endl;
+//            std::cout << "vertex1 : " << vertex1[0] << ", " << vertex1[1] << ", " << vertex1[2] << std::endl;
+//            std::cout << "vertex2 : " << vertex2[0] << ", " << vertex2[1] << ", " << vertex2[2] << std::endl;
+//            std::cout << "aTri_Nrm : " << vertex0[2] << ", " << vertex1[2] << ", " << vertex2[2] << std::endl;
             aTri_XYZ.push_back(vertex0[0]-1);
             aTri_XYZ.push_back(vertex1[0]-1);
             aTri_XYZ.push_back(vertex2[0]-1);
@@ -177,6 +191,10 @@ void read_obj(std::vector<double>& aXYZ,
         }
     }
     fin.close();
+    
+    if (aNrm.size()==0){
+        aTri_Nrm.clear();
+    }
     
     for (unsigned int imm=0; imm<aMaterialMap.size()-1; imm++){
         aMaterialMap[imm].itri_end = aMaterialMap[imm+1].itri_start;

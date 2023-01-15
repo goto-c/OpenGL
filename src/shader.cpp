@@ -35,7 +35,8 @@ std::string read_shader_file(std::string &f)
 int use_shader(std::string &vrt_path,
                std::string &frg_path,
                GLfloat positionData[],
-               GLfloat colorData[])
+               GLfloat colorData[],
+               GLuint elementData[])
 {
 
     std::string sglslvrt = read_shader_file(vrt_path);
@@ -82,9 +83,6 @@ int use_shader(std::string &vrt_path,
     
     GLuint programHandle;
      
-    glBindAttribLocation(programHandle, 0, "VertexPosition");
-    glBindAttribLocation(programHandle, 1, "VertexColor");
-
     // link shader
     programHandle = glCreateProgram(); // プログラムのIDを取得
     glAttachShader(programHandle, vertexShader);
@@ -102,31 +100,42 @@ int use_shader(std::string &vrt_path,
 
     GLuint vaoHandle;
 
-    GLuint vaoHandles[2];
-    glGenBuffers(2, vaoHandles);
+    GLuint vaoHandles[3];
+    glGenBuffers(3, vaoHandles);
     GLuint positionBufferHandle = vaoHandles[0];
     GLuint colorBufferHandle = vaoHandles[1];
+    GLuint elementBufferHandle = vaoHandles[2];
 
+    // Send data to buffer
     glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle);
-    glBufferData(GL_ARRAY_BUFFER, 9*sizeof(float), positionData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 3*8*sizeof(float), positionData, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
     glBufferData(GL_ARRAY_BUFFER, 9*sizeof(float), colorData, GL_STATIC_DRAW);
 
+    glBindBuffer(GL_ARRAY_BUFFER, elementBufferHandle);
+    glBufferData(GL_ARRAY_BUFFER, 3*12*sizeof(float), elementData, GL_STATIC_DRAW);
+
+    // 
     glGenVertexArrays(1, &vaoHandle);
     glBindVertexArray(vaoHandle);
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
 
+    // 
     glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
     glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferHandle);
+    // glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+
+    // Draw
     glBindVertexArray(vaoHandle);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);

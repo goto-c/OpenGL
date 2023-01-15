@@ -133,9 +133,9 @@ int main(void)
 //  std::string path_obj = std::string(PATH_ROOT_DIR) + "/test_data/objInfo/bug/data.obj";
 //  std::string path_mtl = std::string(PATH_ROOT_DIR) + "/test_data/objInfo/bug/data.mtl";
 //  std::string path_dir = std::string(PATH_ROOT_DIR) + "/test_data/objInfo/bug";
-    std::string path_obj = std::string(PATH_ROOT_DIR) + "/test_data/objInfo/test/OBJ/Female_01_100k.OBJ";
-    std::string path_mtl = std::string(PATH_ROOT_DIR) + "/test_data/objInfo/test/OBJ/Female_01_100k.mtl";
-    std::string path_dir = std::string(PATH_ROOT_DIR) + "/test_data/objInfo/test/texture";
+    std::string path_obj = std::string(PATH_ROOT_DIR) + "/test_data/objInfo/bug/data.obj";
+    std::string path_mtl = std::string(PATH_ROOT_DIR) + "/test_data/objInfo/bug/data.mtl";
+    std::string path_dir = std::string(PATH_ROOT_DIR) + "/test_data/objInfo/bug";
     
   std::cout << path_obj << " " << path_mtl << std::endl;
     

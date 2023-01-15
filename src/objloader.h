@@ -26,16 +26,16 @@ class CMaterialMap {
 // strip_slash for read_obj
 std::vector<unsigned int> strip_slash(std::string s);
 
-void read_obj(std::vector<double>& aXYZ,
-std::vector<double>& aNrm,
-std::vector<double>& aTex,
+void read_obj(std::vector<float>& aXYZ,
+std::vector<float>& aNrm,
+std::vector<float>& aTex,
 std::vector<unsigned int>& aTri_XYZ,
 std::vector<unsigned int>& aTri_Tex,
 std::vector<unsigned int>& aTri_Nrm,
 std::vector<CMaterialMap>& aMaterialMap,
 const std::string& file_obj);
 
-void read_obj(std::vector<double>& aXYZ,
+void read_obj(std::vector<float>& aXYZ,
               std::vector<unsigned int>& aTri_XYZ,
               const std::string& file_obj);
 

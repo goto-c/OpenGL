@@ -33,9 +33,9 @@ void resize(int w, int h){
 
 /* ------------------ display -----------------*/
 
-void display(const std::vector<double>& aXYZ,
-             const std::vector<double>& aNrm,
-             const std::vector<double>& aTex,
+void display(const std::vector<float>& aXYZ,
+             const std::vector<float>& aNrm,
+             const std::vector<float>& aTex,
              const std::vector<unsigned int>& aTri_XYZ,
              const std::vector<unsigned int>& aTri_Tex,
              const std::vector<unsigned int>& aTri_Nrm,
@@ -68,17 +68,17 @@ void display(const std::vector<double>& aXYZ,
       ::glBegin(GL_TRIANGLES); // 描画ごとに頂点情報を送る
       for (unsigned int itri = mm.itri_start; itri<mm.itri_end; itri++){
           //std::cout << "start: " << mm.itri_start << "end: " << mm.itri_end << std::endl;
-          ::glTexCoord2dv(aTex.data() + aTri_Tex[itri*3+0] * 2);
-          ::glNormal3dv(aNrm.data() + aTri_Nrm[itri*3+0] * 3);
-          ::glVertex3dv(aXYZ.data() + aTri_XYZ[itri*3+0] * 3);
+          ::glTexCoord2fv(aTex.data() + aTri_Tex[itri*3+0] * 2);
+          ::glNormal3fv(aNrm.data() + aTri_Nrm[itri*3+0] * 3);
+          ::glVertex3fv(aXYZ.data() + aTri_XYZ[itri*3+0] * 3);
           
-          ::glTexCoord2dv(aTex.data() + aTri_Tex[itri*3+1] * 2);
-          ::glNormal3dv(aNrm.data() + aTri_Nrm[itri*3+1] * 3);
-          ::glVertex3dv(aXYZ.data() + aTri_XYZ[itri*3+1] * 3);
+          ::glTexCoord2fv(aTex.data() + aTri_Tex[itri*3+1] * 2);
+          ::glNormal3fv(aNrm.data() + aTri_Nrm[itri*3+1] * 3);
+          ::glVertex3fv(aXYZ.data() + aTri_XYZ[itri*3+1] * 3);
           
-          ::glTexCoord2dv(aTex.data() + aTri_Tex[itri*3+2] * 2);
-          ::glNormal3dv(aNrm.data() + aTri_Nrm[itri*3+2] * 3);
-          ::glVertex3dv(aXYZ.data() + aTri_XYZ[itri*3+2] * 3);
+          ::glTexCoord2fv(aTex.data() + aTri_Tex[itri*3+2] * 2);
+          ::glNormal3fv(aNrm.data() + aTri_Nrm[itri*3+2] * 3);
+          ::glVertex3fv(aXYZ.data() + aTri_XYZ[itri*3+2] * 3);
       }
       glEnd();
   }
@@ -95,9 +95,9 @@ int main(void)
     
   std::cout << path_obj << " " << path_mtl << std::endl;
     
-  std::vector<double> aXYZ;
-  std::vector<double> aNrm;
-  std::vector<double> aTex;
+  std::vector<float> aXYZ;
+  std::vector<float> aNrm;
+  std::vector<float> aTex;
   std::vector<unsigned int> aTri_XYZ;
   std::vector<unsigned int> aTri_Tex;
   std::vector<unsigned int> aTri_Nrm;

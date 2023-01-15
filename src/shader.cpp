@@ -37,7 +37,9 @@ std::string read_shader_file(std::string &f)
 
 int use_shader(std::string &vrt_path,
                std::string &frg_path,
-               std::vector<double> aXYZ,
+               std::vector<float> aXYZ,
+               std::vector<float> aNrm,
+               std::vector<float> aTex,
                std::vector<unsigned int> aTri_XYZ)
 {
 
@@ -102,74 +104,19 @@ int use_shader(std::string &vrt_path,
 
     GLuint vaoHandle;
 
-    GLuint vaoHandles[3];
-    glGenBuffers(3, vaoHandles);
+    GLuint vaoHandles[5];
+    glGenBuffers(5, vaoHandles);
     GLuint positionBufferHandle = vaoHandles[0];
     GLuint colorBufferHandle = vaoHandles[1];
     GLuint elementBufferHandle = vaoHandles[2];
+    GLuint normalBufferHandle = vaoHandles[3];
+    GLuint textureBufferHandle = vaoHandles[4];
 
-    // GLfloat a = 0.5f;
-    // GLfloat vert[] = {
-       // -a, -a, 0.0f,
-       // a, -a, 0.0f,
-       // 0.0f, a, 0.0f
-    // };
-    // GLfloat color[] = {
-        // 0.0, 1.0, 1.0,
-        // 1.0, 0.0, 1.0,
-        // 1.0, 1.0, 0.0
-    // };
-    // GLuint elem[] = {
-        // 0, 1, 2
-    // };
-
-    // GLfloat positionData[] = 
-    // {
-        // -a, -a, -a,
-        // -a, -a, a,
-        // -a, a, -a,
-        // -a, a, a,
-        // a, -a, -a,
-        // a, -a, a,
-        // a, a, -a,
-        // a, a, a,
-    // };
-    // GLfloat colorData[] = 
-    // {
-      // 1.0f, 1.0f, 1.0f, 
-      // 1.0f, 1.0f, 0.0f, 
-      // 0.0f, 1.0f, 0.0f, 
-      // 1.0f, 0.0f, 0.0f, 
-      // 0.0f, 1.0f, 1.0f, 
-      // 0.0f, 1.0f, 0.0f, 
-      // 0.0f, 0.0f, 1.0f, 
-      // 0.5f, 0.5f, 0.5f
-    // };
-    // GLuint elementData[] = 
-    // {
-      // 2, 0, 4,
-      // 4, 6, 2,
-
-      // 6, 4, 5,
-      // 6, 5, 7,
-
-      // 3, 7, 5,
-      // 3, 5, 1,
-
-      // 3, 1, 2,
-      // 2, 1, 0,
-
-      // 2, 6, 3,
-      // 3, 6, 7,
-
-      // 0, 1, 4, 
-      // 1, 5, 4
-    // };
     std::vector<GLfloat> color_white(aXYZ.size(), 1.0f);
 
     // Send data to buffer
     glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle);
-    glBufferData(GL_ARRAY_BUFFER, aXYZ.size()*sizeof(double), aXYZ.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, aXYZ.size()*sizeof(GLfloat), aXYZ.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
     glBufferData(GL_ARRAY_BUFFER, color_white.size()*sizeof(GLfloat), color_white.data(), GL_STATIC_DRAW);
@@ -177,22 +124,36 @@ int use_shader(std::string &vrt_path,
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferHandle);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, aTri_XYZ.size()*sizeof(unsigned int), aTri_XYZ.data(), GL_STATIC_DRAW);
 
+    glBindBuffer(GL_ARRAY_BUFFER, normalBufferHandle);
+    glBufferData(GL_ARRAY_BUFFER, aNrm.size()*sizeof(GLfloat), aNrm.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, textureBufferHandle);
+    glBufferData(GL_ARRAY_BUFFER, aTex.size()*sizeof(GLfloat), aTex.data(), GL_STATIC_DRAW);
     // 
+
     glGenVertexArrays(1, &vaoHandle);
     glBindVertexArray(vaoHandle);
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
 
     // Bind buffers
     glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle);
-    glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 0, (GLubyte *)NULL);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
     glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferHandle);
+
+    glBindBuffer(GL_ARRAY_BUFFER, normalBufferHandle);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, textureBufferHandle);
+    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     // 
 
     glBindVertexArray(vaoHandle);

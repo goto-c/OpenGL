@@ -78,9 +78,9 @@ std::vector<unsigned int> strip_slash(std::string s){
 }
 
 // objファイルを読み込み、データをvectorに格納する
-void read_obj(std::vector<double>& aXYZ,
-              std::vector<double>& aNrm,
-              std::vector<double>& aTex,
+void read_obj(std::vector<float>& aXYZ,
+              std::vector<float>& aNrm,
+              std::vector<float>& aTex,
               std::vector<unsigned int>& aTri_XYZ,
               std::vector<unsigned int>& aTri_Tex,
               std::vector<unsigned int>& aTri_Nrm,
@@ -111,8 +111,8 @@ void read_obj(std::vector<double>& aXYZ,
         // 先頭が'v'の場合
         if (buff[0]=='v' && buff[1]==' '){
             char str[256];
-            double x, y, z;
-            sscanf(buff, "%s %lf %lf %lf", str, &x, &y, &z);
+            float x, y, z;
+            sscanf(buff, "%s %f %f %f", str, &x, &y, &z);
             aXYZ.push_back(x);
             aXYZ.push_back(y);
             aXYZ.push_back(z);
@@ -120,8 +120,8 @@ void read_obj(std::vector<double>& aXYZ,
         // 先頭が'vn'の場合
         if (buff[0]=='v' && buff[1]=='n'){
             char str[256];
-            double x, y, z;
-            sscanf(buff, "%s %lf %lf %lf", str, &x, &y, &z);
+            float x, y, z;
+            sscanf(buff, "%s %f %f %f", str, &x, &y, &z);
             aNrm.push_back(x);
             aNrm.push_back(y);
             aNrm.push_back(z);
@@ -129,8 +129,8 @@ void read_obj(std::vector<double>& aXYZ,
         // 先頭が'vt'の場合
         if (buff[0]=='v' && buff[1]=='t'){
             char str[256];
-            double s, t;
-            sscanf(buff, "%s %lf %lf", str, &s, &t);
+            float s, t;
+            sscanf(buff, "%s %f %f", str, &s, &t);
             aTex.push_back(s);
             aTex.push_back(t);
         }
@@ -202,7 +202,7 @@ void read_obj(std::vector<double>& aXYZ,
     aMaterialMap[aMaterialMap.size()-1].itri_end = aTri_XYZ.size()/3;
 }
 
-void read_obj(std::vector<double>& aXYZ,
+void read_obj(std::vector<float>& aXYZ,
               std::vector<unsigned int>& aTri_XYZ,
               const std::string& file_obj)
 {
@@ -223,8 +223,8 @@ void read_obj(std::vector<double>& aXYZ,
         // 先頭が'v'の場合
         if (buff[0]=='v' && buff[1]==' '){
             char str[256];
-            double x, y, z;
-            sscanf(buff, "%s %lf %lf %lf", str, &x, &y, &z);
+            float x, y, z;
+            sscanf(buff, "%s %f %f %f", str, &x, &y, &z);
             aXYZ.push_back(x);
             aXYZ.push_back(y);
             aXYZ.push_back(z);

@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -5,6 +6,8 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include "shader.h"
 
 std::string read_shader_file(std::string &f)
 {
@@ -34,9 +37,8 @@ std::string read_shader_file(std::string &f)
 
 int use_shader(std::string &vrt_path,
                std::string &frg_path,
-               GLfloat positionData[],
-               GLfloat colorData[],
-               GLuint elementData[])
+               std::vector<double> aXYZ,
+               std::vector<unsigned int> aTri_XYZ)
 {
 
     std::string sglslvrt = read_shader_file(vrt_path);
@@ -84,7 +86,7 @@ int use_shader(std::string &vrt_path,
     GLuint programHandle;
      
     // link shader
-    programHandle = glCreateProgram(); // プログラムのIDを取得
+    programHandle = glCreateProgram();
     glAttachShader(programHandle, vertexShader);
     glAttachShader(programHandle, fragmentShader);
     glLinkProgram(programHandle);
@@ -106,15 +108,74 @@ int use_shader(std::string &vrt_path,
     GLuint colorBufferHandle = vaoHandles[1];
     GLuint elementBufferHandle = vaoHandles[2];
 
+    // GLfloat a = 0.5f;
+    // GLfloat vert[] = {
+       // -a, -a, 0.0f,
+       // a, -a, 0.0f,
+       // 0.0f, a, 0.0f
+    // };
+    // GLfloat color[] = {
+        // 0.0, 1.0, 1.0,
+        // 1.0, 0.0, 1.0,
+        // 1.0, 1.0, 0.0
+    // };
+    // GLuint elem[] = {
+        // 0, 1, 2
+    // };
+
+    // GLfloat positionData[] = 
+    // {
+        // -a, -a, -a,
+        // -a, -a, a,
+        // -a, a, -a,
+        // -a, a, a,
+        // a, -a, -a,
+        // a, -a, a,
+        // a, a, -a,
+        // a, a, a,
+    // };
+    // GLfloat colorData[] = 
+    // {
+      // 1.0f, 1.0f, 1.0f, 
+      // 1.0f, 1.0f, 0.0f, 
+      // 0.0f, 1.0f, 0.0f, 
+      // 1.0f, 0.0f, 0.0f, 
+      // 0.0f, 1.0f, 1.0f, 
+      // 0.0f, 1.0f, 0.0f, 
+      // 0.0f, 0.0f, 1.0f, 
+      // 0.5f, 0.5f, 0.5f
+    // };
+    // GLuint elementData[] = 
+    // {
+      // 2, 0, 4,
+      // 4, 6, 2,
+
+      // 6, 4, 5,
+      // 6, 5, 7,
+
+      // 3, 7, 5,
+      // 3, 5, 1,
+
+      // 3, 1, 2,
+      // 2, 1, 0,
+
+      // 2, 6, 3,
+      // 3, 6, 7,
+
+      // 0, 1, 4, 
+      // 1, 5, 4
+    // };
+    std::vector<GLfloat> color_white(aXYZ.size(), 1.0f);
+
     // Send data to buffer
     glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle);
-    glBufferData(GL_ARRAY_BUFFER, 3*8*sizeof(float), positionData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, aXYZ.size()*sizeof(double), aXYZ.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
-    glBufferData(GL_ARRAY_BUFFER, 9*sizeof(float), colorData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, color_white.size()*sizeof(GLfloat), color_white.data(), GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ARRAY_BUFFER, elementBufferHandle);
-    glBufferData(GL_ARRAY_BUFFER, 3*12*sizeof(float), elementData, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferHandle);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, aTri_XYZ.size()*sizeof(unsigned int), aTri_XYZ.data(), GL_STATIC_DRAW);
 
     // 
     glGenVertexArrays(1, &vaoHandle);
@@ -124,17 +185,16 @@ int use_shader(std::string &vrt_path,
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
-    // 
+    // Bind buffers
     glBindBuffer(GL_ARRAY_BUFFER, positionBufferHandle);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+    glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 0, (GLubyte *)NULL);
 
     glBindBuffer(GL_ARRAY_BUFFER, colorBufferHandle);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferHandle);
-    // glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+    // 
 
-    // Draw
     glBindVertexArray(vaoHandle);
 
     glDeleteShader(vertexShader);

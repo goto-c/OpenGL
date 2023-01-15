@@ -1,12 +1,18 @@
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
 
-#include <glm/glm.hpp>
 #include <iostream>
 
-#include "shader.h"
+#include <glm/glm.hpp>
+using glm::mat4;
+using glm::vec3;
 
-const unsigned int WINDOW_WIDTH = 1440;
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "shader.h"
+#include "objloader.h"
+
+const unsigned int WINDOW_WIDTH = 810;
 const unsigned int WINDOW_HEIGHT = 810;
 
 void keyHandler(GLFWwindow*, int, int, int, int);
@@ -15,6 +21,25 @@ void resize(int w, int h);
 
 int main()
 {
+    std::string path_obj = std::string(PATH_ROOT_DIR) + "/test_data/objInfo/bug/data.obj";
+    std::string path_mtl = std::string(PATH_ROOT_DIR) + "/test_data/objInfo/bug/data.mtl";
+    std::string path_dir = std::string(PATH_ROOT_DIR) + "/test_data/objInfo/bug";
+
+    std::vector<double> aXYZ, aNrm, aTex;
+    std::vector<unsigned int> aTri_XYZ, aTri_Tex, aTri_Nrm;
+    std::vector<CMaterialMap> aMtlMap;
+    std::vector<CMaterialInfo> aMtlInfo;
+    
+    read_obj(aXYZ, aNrm, aTex,
+               aTri_XYZ, aTri_Tex, aTri_Nrm,
+               aMtlMap,
+            path_obj);
+    
+    // for (auto& v : aNrm) { v *= -1; }
+    
+    read_mtl(aMtlInfo,
+               path_mtl);
+    
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
@@ -38,56 +63,25 @@ int main()
         return -1;
     }    
 
-    GLfloat positionData[] = 
-    {
-        -0.8f, -0.8f, -0.8f,
-        -0.8f, -0.8f, 0.8f,
-        -0.8f, 0.8f, -0.8f,
-        -0.8f, 0.8f, 0.8f,
-        0.8f, -0.8f, -0.8f,
-        0.8f, -0.8f, 0.8f,
-        0.8f, 0.8f, -0.8f,
-        0.8f, 0.8f, 0.8f,
-    };
-    GLfloat colorData[] = 
-    {
-      1.0f, 1.0f, 0.0f, 
-      0.0f, 1.0f, 0.0f, 
-      0.0f, 1.0f, 1.0f, 
-      0.0f, 1.0f, 0.0f, 
-      0.0f, 1.0f, 0.0f, 
-      0.0f, 1.0f, 0.0f, 
-      0.0f, 1.0f, 0.0f, 
-      0.0f, 1.0f, 0.0f
-    };
-    GLuint elementData[] = 
-    {
-      2, 0, 4,
-      4, 6, 2,
-
-      6, 4, 5,
-      6, 5, 7,
-
-      3, 7, 5,
-      3, 5, 1,
-
-      3, 2, 1,
-      2, 1, 0,
-
-      2, 6, 3,
-      3, 6, 7,
-
-      0, 4, 1, 
-      1, 4, 5
-    };
-
     std::string vert_shader_file = "../shader/v460.vert";
     std::string frag_shader_file = "../shader/v460.frag";
-    use_shader(vert_shader_file, frag_shader_file, positionData, colorData, elementData);
+    GLuint programHandle = use_shader(vert_shader_file, frag_shader_file, aXYZ, aTri_XYZ);
 
+    std::cout << "aTri_XYZ.size(): " << aTri_XYZ.size() << std::endl;
     while (!glfwWindowShouldClose(window))
     {
-        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), (float) glfwGetTime(), glm::vec3(0.0f, 1.0f, 1.0f));
+
+        GLuint location = glGetUniformLocation(programHandle, "RotationMatrix");
+
+        if (location >= 0)
+        {
+            glUniformMatrix4fv(location, 1, GL_FALSE, &rotationMatrix[0][0]);
+        }
+
+        glDrawElements(GL_TRIANGLES, aTri_XYZ.size(), GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

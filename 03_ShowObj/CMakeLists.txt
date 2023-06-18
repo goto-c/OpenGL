@@ -28,12 +28,16 @@ set(GLFW_INCLUDE_DIR
 # OpenGL
 find_package(OpenGL REQUIRED)
 
+# spdlog
+set(SPDLOG_INCLUDE_DIR "../3rd_party/spdlog/include")
+
 ############
 
 set(3RD_PARTY_DIR ../3rd_party)
 
 include_directories(
   ${GLFW_INCLUDE_DIR}
+  ${SPDLOG_INCLUDE_DIR}
   ${3RD_PARTY_DIR}
   ../include)
 

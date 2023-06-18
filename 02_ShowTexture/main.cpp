@@ -11,6 +11,8 @@
 #endif
 #include "stb_image.h"
 
+#include "spdlog/spdlog.h"
+
 static const GLfloat lightpos[] = {1.0, 1.0, 1.0, 1.0}; /* 位置　　　 */
 static const GLfloat lightcol[] = {1.0, 1.0, 1.0, 1.0}; /* 直接光強度 */
 static const GLfloat lightamb[] = {0.1, 0.1, 0.1, 1.0}; /* 環境光強度 */
@@ -45,7 +47,7 @@ static void init() {
         throw std::runtime_error("Failed to get image");
     }
 
-    std::cout << width << ", " << height << ", " << channels << std::endl;
+    spdlog::info("{0:d} x {1:d}; channels: {2:d}", width, height, channels);
 
     /* テクスチャ画像はバイト単位に詰め込まれている */
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

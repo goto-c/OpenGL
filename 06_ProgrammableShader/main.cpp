@@ -11,6 +11,8 @@ using glm::vec3;
 #include "objloader.h"
 #include "shader.h"
 
+#include "spdlog/spdlog.h"
+
 const unsigned int WINDOW_WIDTH = 810;
 const unsigned int WINDOW_HEIGHT = 810;
 
@@ -30,7 +32,7 @@ void keyHandler(GLFWwindow *window, int key, int scancode, int action,
 }
 
 void resize(int w, int h) {
-    std::cout << w << ":" << h << std::endl;
+    spdlog::info("resized: {0:d} x {1:d}", w, h);
     glViewport(0, 0, w, h);
 }
 

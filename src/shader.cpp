@@ -8,6 +8,8 @@
 
 #include "shader.h"
 
+#include "spdlog/spdlog.h"
+
 std::string read_shader_file(std::string &f) {
     std::string source;
     source.clear();
@@ -43,14 +45,13 @@ int use_shader(std::string &vrt_path, std::string &frg_path,
     const char *glslvrt = sglslvrt.c_str();
     const char *glslfrg = sglslfrg.c_str();
 
-    std::cout << "read vrt_shader: " << std::endl;
+    spdlog::info("Read vertex shader : {}", vrt_path);
     std::cout << read_shader_file(vrt_path) << std::endl;
-    std::cout << "read frg_shader: " << std::endl;
+    spdlog::info("Read fragment sgader : {}", frg_path);
     std::cout << read_shader_file(frg_path) << std::endl;
 
     if (glslvrt == NULL) {
-        std::cout << "Could not read file: " << vrt_path << std::endl;
-        return -1;
+        throw std::runtime_error("Could not read vertex shader file");
     }
 
     int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -61,13 +62,11 @@ int use_shader(std::string &vrt_path, std::string &frg_path,
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED" << infoLog
-                  << std::endl;
+        spdlog::error("ERROR::SHADER::VERTEX::COMPILATION_FAILED", infoLog);
     }
 
     if (glslfrg == NULL) {
-        std::cout << "Could not read file: " << frg_path << std::endl;
-        return -1;
+        throw std::runtime_error("Could not read fragment shader file");
     }
 
     int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -76,8 +75,7 @@ int use_shader(std::string &vrt_path, std::string &frg_path,
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED" << infoLog
-                  << std::endl;
+        spdlog::error("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED", infoLog);
     }
 
     GLuint programHandle;
@@ -90,13 +88,12 @@ int use_shader(std::string &vrt_path, std::string &frg_path,
     glGetProgramiv(programHandle, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(programHandle, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKAGE_FAILED" << infoLog
-                  << std::endl;
+        spdlog::error("ERROR::SHADER::PROGRAM::LINKAGE_FAILED", infoLog);
     } else {
         glUseProgram(programHandle);
     }
-    std::cout << vertexShader << " " << fragmentShader
-              << " shader program: " << programHandle << std::endl;
+    spdlog::info("{0:d}; {1:d}; shader program: {2:d}", vertexShader,
+                 fragmentShader, programHandle);
 
     GLuint vaoHandle;
 
@@ -172,14 +169,13 @@ int use_shader(std::string &vrt_path, std::string &frg_path) {
     const char *glslvrt = sglslvrt.c_str();
     const char *glslfrg = sglslfrg.c_str();
 
-    std::cout << "read vrt_shader: " << std::endl;
+    spdlog::info("Read vertex shader: {}", vrt_path);
     std::cout << read_shader_file(vrt_path) << std::endl;
-    std::cout << "read frg_shader: " << std::endl;
+    spdlog::info("Read fragment shader: {}", frg_path);
     std::cout << read_shader_file(frg_path) << std::endl;
 
     if (glslvrt == NULL) {
-        std::cout << "Could not read file: " << vrt_path << std::endl;
-        return -1;
+        throw std::runtime_error("Could not read vertex shader file");
     }
 
     int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -190,13 +186,11 @@ int use_shader(std::string &vrt_path, std::string &frg_path) {
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED" << infoLog
-                  << std::endl;
+        spdlog::error("ERROR::SHADER::VERTEX::COMPILATION_FAILED", infoLog);
     }
 
     if (glslfrg == NULL) {
-        std::cout << "Could not read file: " << frg_path << std::endl;
-        return -1;
+        throw std::runtime_error("Could not read fragment shader file");
     }
 
     int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -205,8 +199,7 @@ int use_shader(std::string &vrt_path, std::string &frg_path) {
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED" << infoLog
-                  << std::endl;
+        spdlog::error("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED", infoLog);
     }
 
     GLuint programHandle;
@@ -219,13 +212,12 @@ int use_shader(std::string &vrt_path, std::string &frg_path) {
     glGetProgramiv(programHandle, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(programHandle, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKAGE_FAILED" << infoLog
-                  << std::endl;
+        spdlog::error("ERROR::SHADER::PROGRAM::LINKAGE::FAILED", infoLog);
     } else {
         glUseProgram(programHandle);
     }
-    std::cout << vertexShader << " " << fragmentShader
-              << " shader program: " << programHandle << std::endl;
+    spdlog::info("{0:d}; {1:d}; shader program: {2:d}", vertexShader,
+                 fragmentShader, programHandle);
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);

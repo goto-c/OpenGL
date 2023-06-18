@@ -16,6 +16,8 @@
 
 #include <objloader.h>
 
+#include "spdlog/spdlog.h"
+
 // ------
 // callback
 // ------
@@ -31,7 +33,7 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action,
 }
 
 void resize(int w, int h) {
-    std::cout << w << ":" << h << std::endl;
+    spdlog::info("resized: {0:d} x {1:d}", w, h);
     glViewport(0, 0, w, h);
 }
 

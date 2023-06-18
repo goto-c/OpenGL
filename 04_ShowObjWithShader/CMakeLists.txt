@@ -35,6 +35,9 @@ get_filename_component(GLAD_SRC_DIR ${GLAD_SRC_DIR} ABSOLUTE)
 # OpenGL
 find_package(OpenGL REQUIRED)
 
+# spdlog
+set(SPDLOG_INCLUDE_DIR "../3rd_party/spdlog/include")
+
 ############
 
 set(3RD_PARTY_DIR ../3rd_party)
@@ -42,6 +45,7 @@ set(3RD_PARTY_DIR ../3rd_party)
 include_directories(
   ${GLFW_INCLUDE_DIR}
   ${GLAD_INCLUDE_DIR}
+  ${SPDLOG_INCLUDE_DIR}
   ${3RD_PARTY_DIR}
   ../include)
 

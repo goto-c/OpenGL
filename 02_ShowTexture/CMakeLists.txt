@@ -22,9 +22,13 @@ get_filename_component(GLFW_LIBRARY ${GLFW_LIBRARY} ABSOLUTE)
 # OpenGL
 find_package(OpenGL REQUIRED)
 
+# spdlog
+set(SPDLOG_INCLUDE_DIR "../3rd_party/spdlog/include")
+
 ###########
 
 include_directories(
+  ${SPDLOG_INCLUDE_DIR}
   ../3rd_party/glfw/include
   ../3rd_party)
 

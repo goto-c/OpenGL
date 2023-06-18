@@ -1,9 +1,15 @@
 #include <iostream>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
 #include <cstdlib>
 #include <cstdio>
 
+// --------
+// callback 
+// --------
+//
 static void error_callback(int error, const char* description)
 {
   fputs(description, stderr);
@@ -15,23 +21,34 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
+// --------
+// main
+// --------
+
 int main(void)
 {
   GLFWwindow* window;
+
   glfwSetErrorCallback(error_callback);
-  if (!glfwInit())
+
+  if (!glfwInit()){
     exit(EXIT_FAILURE);
+  }
+
   window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+
   if (!window)
   {
     glfwTerminate();
     exit(EXIT_FAILURE);
   }
+
   glfwMakeContextCurrent(window);
   glfwSetKeyCallback(window, key_callback);
+
   while (!glfwWindowShouldClose(window))
   {
-    //float ratio; //~54 図形を描画
+    //float ratio;
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     //ratio = width / (float) height;
@@ -39,7 +56,9 @@ int main(void)
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
+
   glfwDestroyWindow(window);
+
   glfwTerminate();
   exit(EXIT_SUCCESS);
 }

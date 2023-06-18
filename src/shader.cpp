@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -13,8 +14,9 @@ std::string read_shader_file(std::string &f) {
 
     std::ifstream fin;
     fin.open(f);
-    if (fin.fail())
-        std::cout << "shader source file open failed" << std::endl;
+    if (fin.fail()) {
+        throw std::runtime_error("shader source file open failed");
+    }
 
     const int BUFF_SIZE = 1024;
     char buff[BUFF_SIZE];

@@ -10,7 +10,7 @@
 
 /* --------------- ***.obj loader --------------*/
 
-std::vector<unsigned int> strip_slash(std::string s) {
+std::vector<unsigned int> Object::strip_slash(std::string s) {
     //    std::cout << "s : " << s << std::endl;
     //    std::cout << "s.size() : " << s.size() << std::endl;
     std::vector<unsigned int> vtn_values;

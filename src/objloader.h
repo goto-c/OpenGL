@@ -49,11 +49,10 @@ class Object {
     std::vector<CMaterialInfo> m_aMtlInfo;
 
   private:
+    std::vector<unsigned int> strip_slash(std::string s);
+
     std::string m_obj_file_path;
     std::string m_mtl_file_path;
 };
-
-// strip_slash for read_obj
-std::vector<unsigned int> strip_slash(std::string s);
 
 void read_flag(std::vector<unsigned int> &flag, const std::string &file_flag);

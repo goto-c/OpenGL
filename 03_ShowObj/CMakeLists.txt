@@ -35,7 +35,7 @@ set(3RD_PARTY_DIR ../3rd_party)
 include_directories(
   ${GLFW_INCLUDE_DIR}
   ${3RD_PARTY_DIR}
-  ../src)
+  ../include)
 
 add_executable(${PROJECT_NAME}
   main.cpp

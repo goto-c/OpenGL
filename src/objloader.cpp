@@ -11,8 +11,7 @@
 /* --------------- ***.obj loader --------------*/
 
 std::vector<unsigned int> Object::strip_slash(std::string s) {
-    //    std::cout << "s : " << s << std::endl;
-    //    std::cout << "s.size() : " << s.size() << std::endl;
+
     std::vector<unsigned int> vtn_values;
     vtn_values.clear();
 
@@ -44,15 +43,6 @@ std::vector<unsigned int> Object::strip_slash(std::string s) {
         digits_n.push_back(s[idx]);
         idx++;
     }
-    //    std::cout << "digits_v.size() : " << digits_v.size() << std::endl;
-    //    for (int i=0; i<digits_v.size(); i++){
-    //        std::cout << "digits_v : " << digits_v[i] << std::endl;
-    ////        std::cout << "digits_n : " << digits_n[i] << std::endl;
-    //    }
-    //    std::cout << "digits_t.size() : " << digits_t.size() << std::endl;
-    //    for (int i=0; i<digits_t.size(); i++){
-    //        std::cout << "digits_t : " << digits_t[i] << std::endl;
-    //    }
     // インデックスの文字列を10進数に変換
     for (unsigned int i = 0; i < digits_v.size(); i++) {
         v_value += std::pow(10, i) * (digits_v[digits_v.size() - 1 - i] - '0');
@@ -63,7 +53,6 @@ std::vector<unsigned int> Object::strip_slash(std::string s) {
     for (unsigned int i = 0; i < digits_n.size(); i++) {
         n_value += std::pow(10, i) * (digits_n[digits_n.size() - 1 - i] - '0');
     }
-    //    std::cout << "t_value : " << t_value << std::endl;
     vtn_values.push_back(v_value);
     vtn_values.push_back(t_value);
     vtn_values.push_back(n_value);
@@ -182,46 +171,8 @@ int Object::load_obj() {
     }
     m_aMtlMap[m_aMtlMap.size() - 1].itri_end = m_aTri_XYZ.size() / 3;
 
-    return 0;
+    return 1;
 }
-
-// void read_obj(std::vector<float> &aXYZ, std::vector<unsigned int> &aTri_XYZ,
-//               const std::string &file_obj) {
-//     std::ifstream fin;
-//     fin.open(file_obj);
-//     if (fin.fail())
-//         std::cout << "obj file open failed" << std::endl;
-
-//     aXYZ.clear();
-//     aTri_XYZ.clear();
-
-//     const int BUFF_SIZE = 256;
-//     char buff[BUFF_SIZE];
-
-//     while (!fin.eof()) {
-//         fin.getline(buff, BUFF_SIZE);
-
-//         // 先頭が'v'の場合
-//         if (buff[0] == 'v' && buff[1] == ' ') {
-//             char str[256];
-//             float x, y, z;
-//             sscanf(buff, "%s %f %f %f", str, &x, &y, &z);
-//             aXYZ.push_back(x);
-//             aXYZ.push_back(y);
-//             aXYZ.push_back(z);
-//         }
-//         // 先頭が'f'の場合
-//         if (buff[0] == 'f') {
-//             char str[256];
-//             unsigned int i0, i1, i2;
-//             sscanf(buff, "%s %u %u %u", str, &i0, &i1, &i2);
-//             aTri_XYZ.push_back(i0 - 1);
-//             aTri_XYZ.push_back(i1 - 1);
-//             aTri_XYZ.push_back(i2 - 1);
-//         }
-//     }
-//     fin.close();
-// }
 
 void read_flag(std::vector<unsigned int> &flag, const std::string &file_flag) {
     flag.clear();

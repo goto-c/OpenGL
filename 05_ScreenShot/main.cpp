@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -129,8 +130,7 @@ int main(void) {
     glfwSetKeyCallback(window, key_callback);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
+        throw std::runtime_error("Failed to initialize GLAD");
     }
 
     {
@@ -223,8 +223,9 @@ int main(void) {
             (GLubyte *)malloc((width) * (height)*3 * (sizeof(GLubyte)));
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
         glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixel_data);
-        if (!pixel_data)
-            std::cout << "error pixel data " << std::endl;
+        if (!pixel_data) {
+            throw std::runtime_error("error pixel data");
+        }
 
         stbi_write_png(
             (std::string(PATH_ROOT_DIR) + "/05_ScreenShot/output/Screen_0.png")

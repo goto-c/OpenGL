@@ -4,6 +4,7 @@
 #include <cstdlib>
 
 #include <cstdio>
+#include <stdexcept>
 
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
@@ -40,12 +41,11 @@ static void init() {
         (std::string(PATH_ROOT_DIR) + "/test_data/pics/scene1.jpg").c_str(),
         &width, &height, &channels, 3);
     if (img == NULL) {
-        std::cout << "Failed to get image" << std::endl;
         stbi_failure_reason();
+        throw std::runtime_error("Failed to get image");
     }
 
     std::cout << width << ", " << height << ", " << channels << std::endl;
-    std::cout << std::endl;
 
     /* テクスチャ画像はバイト単位に詰め込まれている */
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

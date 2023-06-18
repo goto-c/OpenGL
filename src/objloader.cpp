@@ -1,6 +1,7 @@
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <stdio.h>
 #include <string.h>
 #include <string>
@@ -209,8 +210,7 @@ int Object::load_mtl(std::string mtl_file_path) {
     // &file_mtl) {
     std::ifstream fin(mtl_file_path);
     if (fin.fail()) {
-        std::cout << "mtl file open failed" << std::endl;
-        return 0;
+        throw std::runtime_error("mtl file open failed");
     }
 
     const int BUFF_SIZE = 256;

@@ -104,8 +104,6 @@ int main(void) {
 
     Object obj = Object(path_obj, path_mtl);
 
-    obj.load_obj();
-    obj.load_mtl();
     // for (auto& v : aXYZ) { v *= 0.1; }
     for (auto &v : obj.m_aNrm) {
         v *= -1;

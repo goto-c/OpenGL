@@ -33,11 +33,11 @@ class CMaterialMap {
 class Object {
 
   public:
-    Object(std::string obj_file_path) : m_obj_file_path(obj_file_path) {}
-    Object(std::string obj_file_path, std::string mtl_file_path)
-        : m_obj_file_path(obj_file_path), m_mtl_file_path(mtl_file_path) {}
-    int load_obj();
-    int load_mtl();
+    Object(std::string obj_file_path) { load_obj(obj_file_path); }
+    Object(std::string obj_file_path, std::string mtl_file_path) {
+        load_obj(obj_file_path);
+        load_mtl(mtl_file_path);
+    }
 
     std::vector<float> m_aXYZ;
     std::vector<float> m_aNrm;
@@ -49,10 +49,9 @@ class Object {
     std::vector<CMaterialInfo> m_aMtlInfo;
 
   private:
+    int load_obj(std::string obj_file_path);
+    int load_mtl(std::string mtl_file_path);
     std::vector<unsigned int> strip_slash(std::string s);
-
-    std::string m_obj_file_path;
-    std::string m_mtl_file_path;
 };
 
 void read_flag(std::vector<unsigned int> &flag, const std::string &file_flag);

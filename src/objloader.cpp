@@ -60,13 +60,14 @@ std::vector<unsigned int> Object::strip_slash(std::string s) {
     return vtn_values;
 }
 
-int Object::load_obj() {
+int Object::load_obj(std::string obj_file_path) {
     m_aMtlMap.clear();
 
     std::ifstream fin;
-    fin.open(m_obj_file_path);
-    if (fin.fail())
-        std::cout << "obj file open failed" << std::endl;
+    fin.open(obj_file_path);
+    if (fin.fail()) {
+        throw std::runtime_error("obj file open failed");
+    }
 
     m_aXYZ.clear();
     m_aNrm.clear();
@@ -203,10 +204,10 @@ void read_flag(std::vector<unsigned int> &flag, const std::string &file_flag) {
 
 /* ----------------- ***.mtl loader ---------------*/
 
-int Object::load_mtl() {
+int Object::load_mtl(std::string mtl_file_path) {
     // void read_mtl(std::vector<CMaterialInfo> &aMtlInfo, const std::string
     // &file_mtl) {
-    std::ifstream fin(m_mtl_file_path);
+    std::ifstream fin(mtl_file_path);
     if (fin.fail()) {
         std::cout << "mtl file open failed" << std::endl;
         return 0;

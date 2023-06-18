@@ -107,15 +107,10 @@ int main(void) {
 
     Object obj = Object(path_obj, path_mtl);
 
-    obj.load_obj();
-    std::cout << "obj file loading succeeded " << std::endl;
-
     // for (auto& v : aXYZ) { v *= 0.01; }
     // for (auto &v : aNrm) {
     //     v *= -1;
     // }
-
-    obj.load_mtl();
 
     GLFWwindow *window;
     glfwSetErrorCallback(error_callback);

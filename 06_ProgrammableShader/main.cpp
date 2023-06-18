@@ -46,7 +46,7 @@ int main() {
     std::string path_dir =
         std::string(PATH_ROOT_DIR) + "/test_data/objInfo/lion";
 
-    OBJECT obj = OBJECT(path_obj, path_mtl);
+    Object obj = Object(path_obj, path_mtl);
     obj.load_obj();
     obj.load_mtl();
 

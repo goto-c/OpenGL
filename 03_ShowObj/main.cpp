@@ -39,7 +39,7 @@ void resize(int w, int h) {
 // display
 // ------
 //
-void display(OBJECT obj) {
+void display(Object obj) {
     ::glEnable(GL_LIGHTING);
     for (const auto &mm : obj.m_aMtlMap) {
         unsigned int imi = mm.iMaterialInfo;
@@ -105,7 +105,7 @@ int main(void) {
     std::string path_dir =
         std::string(PATH_ROOT_DIR) + "/test_data/objInfo/bug";
 
-    OBJECT obj = OBJECT(path_obj, path_mtl);
+    Object obj = Object(path_obj, path_mtl);
 
     obj.load_obj();
     std::cout << "obj file loading succeeded " << std::endl;

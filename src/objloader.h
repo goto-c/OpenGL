@@ -30,11 +30,11 @@ class CMaterialMap {
 // ------
 // OBJECT Class
 // ------
-class OBJECT {
+class Object {
 
   public:
-    OBJECT(std::string obj_file_path) : m_obj_file_path(obj_file_path) {}
-    OBJECT(std::string obj_file_path, std::string mtl_file_path)
+    Object(std::string obj_file_path) : m_obj_file_path(obj_file_path) {}
+    Object(std::string obj_file_path, std::string mtl_file_path)
         : m_obj_file_path(obj_file_path), m_mtl_file_path(mtl_file_path) {}
     int load_obj();
     int load_mtl();

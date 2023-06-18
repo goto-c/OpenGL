@@ -71,7 +71,7 @@ std::vector<unsigned int> strip_slash(std::string s) {
     return vtn_values;
 }
 
-int OBJECT::load_obj() {
+int Object::load_obj() {
     m_aMtlMap.clear();
 
     std::ifstream fin;
@@ -252,7 +252,7 @@ void read_flag(std::vector<unsigned int> &flag, const std::string &file_flag) {
 
 /* ----------------- ***.mtl loader ---------------*/
 
-int OBJECT::load_mtl() {
+int Object::load_mtl() {
     // void read_mtl(std::vector<CMaterialInfo> &aMtlInfo, const std::string
     // &file_mtl) {
     std::ifstream fin(m_mtl_file_path);

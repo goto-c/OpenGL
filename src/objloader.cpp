@@ -8,10 +8,11 @@
 #include <vector>
 
 #include "objloader.h"
+#include "spdlog/spdlog.h"
 
 /* --------------- ***.obj loader --------------*/
 
-std::vector<unsigned int> Object::strip_slash(std::string s) {
+std::vector<unsigned int> Object::strip_slash(const std::string s) {
 
     std::vector<unsigned int> vtn_values;
     vtn_values.clear();
@@ -61,7 +62,7 @@ std::vector<unsigned int> Object::strip_slash(std::string s) {
     return vtn_values;
 }
 
-int Object::load_obj(std::string obj_file_path) {
+int Object::load_obj(const std::string obj_file_path) {
     m_aMtlMap.clear();
 
     std::ifstream fin;
@@ -119,7 +120,7 @@ int Object::load_obj(std::string obj_file_path) {
                 mm.itri_start = icount_tri;
                 mm.name = std::string(mtl_name);
                 m_aMtlMap.push_back(mm);
-                std::cout << "usemtl: " << mm.name << std::endl;
+                spdlog::info("usemtl: {}", mm.name);
             }
         }
         // 先頭が'f'の場合
@@ -178,14 +179,14 @@ int Object::load_obj(std::string obj_file_path) {
 
 void read_flag(std::vector<unsigned int> &flag, const std::string &file_flag) {
     flag.clear();
-    std::cout << "initial flag size: " << flag.size() << std::endl;
+    spdlog::info("initial flag size: {0:d}", flag.size());
 
     std::ifstream fin;
     fin.open(file_flag);
     if (fin.fail()) {
-        std::cout << "flag file open failed" << std::endl;
+        spdlog::info("flag file open failed");
     } else {
-        std::cout << "flag file: " << file_flag << std::endl;
+        spdlog::info("flag file: {}", file_flag);
     }
 
     const int BUFF_SIZE = 256;
@@ -234,7 +235,7 @@ int Object::load_mtl(std::string mtl_file_path) {
             mi.map_Kd.clear();
             char str[256], name[1024];
             sscanf(buff, "%s %s", str, name);
-            std::cout << "newmtl: " << name << std::endl;
+            spdlog::info("newmtl: {}", name);
             mi.name = name;
         }
         // 環境光・拡散光・鏡面光のRGB値を構造体のメンバに追加
@@ -255,8 +256,8 @@ int Object::load_mtl(std::string mtl_file_path) {
             mi.Kd[1] = g;
             mi.Kd[2] = b;
             mi.Kd[3] = 1.f;
-            std::cout << "Kd _: " << mi.Kd[0] << ", " << mi.Kd[1] << ", "
-                      << mi.Kd[2] << std::endl;
+            spdlog::info("Kd _: {0:f} , {1:f} , {2:f}", mi.Kd[0], mi.Kd[1],
+                         mi.Kd[2]);
         }
         if (buff[1] == 'K' && buff[2] == 's') {
             char str[256];
@@ -277,7 +278,7 @@ int Object::load_mtl(std::string mtl_file_path) {
             char str[256], map[1024];
             sscanf(buff, "%s %s", str, map);
             mi.map_Kd = map;
-            std::cout << "map_Kd _: " << mi.map_Kd << std::endl;
+            spdlog::info("map_Kd _: {}", mi.map_Kd);
 
             m_aMtlInfo.push_back(mi);
         }

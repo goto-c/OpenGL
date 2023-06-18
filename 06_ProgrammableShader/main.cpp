@@ -1,4 +1,3 @@
-#include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
 #include <iostream>
@@ -47,16 +46,11 @@ int main() {
     std::string path_dir =
         std::string(PATH_ROOT_DIR) + "/test_data/objInfo/lion";
 
-    std::vector<float> aXYZ, aNrm, aTex;
-    std::vector<unsigned int> aTri_XYZ, aTri_Tex, aTri_Nrm;
-    std::vector<CMaterialMap> aMtlMap;
-    std::vector<CMaterialInfo> aMtlInfo;
+    OBJECT obj = OBJECT(path_obj, path_mtl);
+    obj.load_obj();
+    obj.load_mtl();
 
-    read_obj(aXYZ, aNrm, aTex, aTri_XYZ, aTri_Tex, aTri_Nrm, aMtlMap, path_obj);
-
-    // for (auto& v : aNrm) { v *= -1; }
-
-    read_mtl(aMtlInfo, path_mtl);
+    // for (auto& v : obj.m_aNrm) { v *= -1; }
 
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -82,12 +76,13 @@ int main() {
 
     std::string vert_shader_file = "../shader/v460.vert";
     std::string frag_shader_file = "../shader/v460.frag";
-    GLuint programHandle = use_shader(vert_shader_file, frag_shader_file, aXYZ,
-                                      aNrm, aTex, aTri_XYZ);
+    GLuint programHandle =
+        use_shader(vert_shader_file, frag_shader_file, obj.m_aXYZ, obj.m_aNrm,
+                   obj.m_aTex, obj.m_aTri_XYZ);
 
     glEnable(GL_DEPTH_TEST);
 
-    std::cout << "aTri_XYZ.size(): " << aTri_XYZ.size() << std::endl;
+    std::cout << "aTri_XYZ.size(): " << obj.m_aTri_XYZ.size() << std::endl;
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -105,7 +100,7 @@ int main() {
             glUniformMatrix4fv(location, 1, GL_FALSE, &mvp[0][0]);
         }
 
-        glDrawElements(GL_TRIANGLES, aTri_XYZ.size(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, obj.m_aTri_XYZ.size(), GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

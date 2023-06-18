@@ -1,8 +1,12 @@
 #include <GLFW/glfw3.h>
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <vector>
 
 // mtlファイルのmaterial情報を格納する
 class CMaterialInfo {
-public:
+  public:
     std::string name;
     float Ka[4];
     float Kd[4];
@@ -16,31 +20,40 @@ public:
 
 // objファイルのmaterial使用場所を格納する
 class CMaterialMap {
-    public:
+  public:
     std::string name;
     unsigned int itri_start;
     unsigned int itri_end;
     unsigned int iMaterialInfo;
 };
 
+// ------
+// OBJECT Class
+// ------
+class OBJECT {
+
+  public:
+    OBJECT(std::string obj_file_path) : m_obj_file_path(obj_file_path) {}
+    OBJECT(std::string obj_file_path, std::string mtl_file_path)
+        : m_obj_file_path(obj_file_path), m_mtl_file_path(mtl_file_path) {}
+    int load_obj();
+    int load_mtl();
+
+    std::vector<float> m_aXYZ;
+    std::vector<float> m_aNrm;
+    std::vector<float> m_aTex;
+    std::vector<unsigned int> m_aTri_XYZ;
+    std::vector<unsigned int> m_aTri_Tex;
+    std::vector<unsigned int> m_aTri_Nrm;
+    std::vector<CMaterialMap> m_aMtlMap;
+    std::vector<CMaterialInfo> m_aMtlInfo;
+
+  private:
+    std::string m_obj_file_path;
+    std::string m_mtl_file_path;
+};
+
 // strip_slash for read_obj
 std::vector<unsigned int> strip_slash(std::string s);
 
-void read_obj(std::vector<float>& aXYZ,
-std::vector<float>& aNrm,
-std::vector<float>& aTex,
-std::vector<unsigned int>& aTri_XYZ,
-std::vector<unsigned int>& aTri_Tex,
-std::vector<unsigned int>& aTri_Nrm,
-std::vector<CMaterialMap>& aMaterialMap,
-const std::string& file_obj);
-
-void read_obj(std::vector<float>& aXYZ,
-              std::vector<unsigned int>& aTri_XYZ,
-              const std::string& file_obj);
-
-void read_flag(std::vector<unsigned int>& flag,
-               const std::string& file_flag);
-
-void read_mtl(std::vector<CMaterialInfo>& aMat,
-const std::string& file_mtl);
+void read_flag(std::vector<unsigned int> &flag, const std::string &file_flag);

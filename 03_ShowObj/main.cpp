@@ -9,10 +9,9 @@
 #include <cstdio>
 #include <cstdlib>
 
-#ifndef
+#ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
 #endif
-
 #include "stb_image.h"
 
 #include <objloader.h>
@@ -40,22 +39,16 @@ void resize(int w, int h) {
 // display
 // ------
 //
-void display(const std::vector<float> &aXYZ, const std::vector<float> &aNrm,
-             const std::vector<float> &aTex,
-             const std::vector<unsigned int> &aTri_XYZ,
-             const std::vector<unsigned int> &aTri_Tex,
-             const std::vector<unsigned int> &aTri_Nrm,
-             const std::vector<CMaterialMap> &aMtlMap,
-             const std::vector<CMaterialInfo> &aMtlInfo) {
+void display(OBJECT obj) {
     ::glEnable(GL_LIGHTING);
-    for (const auto &mm : aMtlMap) {
+    for (const auto &mm : obj.m_aMtlMap) {
         unsigned int imi = mm.iMaterialInfo;
-        if (imi < 0 || imi >= aMtlInfo.size()) {
+        if (imi < 0 || imi >= obj.m_aMtlInfo.size()) {
             ::glDisable(GL_TEXTURE_2D);
             const GLfloat color_white[] = {1.0, 1.0, 1.0, 1.0};
             glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color_white);
         } else {
-            const auto &mi = aMtlInfo[imi];
+            const auto &mi = obj.m_aMtlInfo[imi];
             if (mi.Kd[0] != 0) {
                 ::glMaterialfv(GL_FRONT, GL_DIFFUSE, mi.Kd);
             } else {
@@ -72,23 +65,29 @@ void display(const std::vector<float> &aXYZ, const std::vector<float> &aNrm,
 
         ::glBegin(GL_TRIANGLES);
         for (unsigned int itri = mm.itri_start; itri < mm.itri_end; itri++) {
-            ::glTexCoord2fv(aTex.data() + aTri_Tex[itri * 3 + 0] * 2);
-            if (aNrm.size() != 0) {
-                ::glNormal3fv(aNrm.data() + aTri_Nrm[itri * 3 + 0] * 3);
+            ::glTexCoord2fv(obj.m_aTex.data() +
+                            obj.m_aTri_Tex[itri * 3 + 0] * 2);
+            if (obj.m_aNrm.size() != 0) {
+                ::glNormal3fv(obj.m_aNrm.data() +
+                              obj.m_aTri_Nrm[itri * 3 + 0] * 3);
             }
-            ::glVertex3fv(aXYZ.data() + aTri_XYZ[itri * 3 + 0] * 3);
+            ::glVertex3fv(obj.m_aXYZ.data() + obj.m_aTri_XYZ[itri * 3 + 0] * 3);
 
-            ::glTexCoord2fv(aTex.data() + aTri_Tex[itri * 3 + 1] * 2);
-            if (aNrm.size() != 0) {
-                ::glNormal3fv(aNrm.data() + aTri_Nrm[itri * 3 + 1] * 3);
+            ::glTexCoord2fv(obj.m_aTex.data() +
+                            obj.m_aTri_Tex[itri * 3 + 1] * 2);
+            if (obj.m_aNrm.size() != 0) {
+                ::glNormal3fv(obj.m_aNrm.data() +
+                              obj.m_aTri_Nrm[itri * 3 + 1] * 3);
             }
-            ::glVertex3fv(aXYZ.data() + aTri_XYZ[itri * 3 + 1] * 3);
+            ::glVertex3fv(obj.m_aXYZ.data() + obj.m_aTri_XYZ[itri * 3 + 1] * 3);
 
-            ::glTexCoord2fv(aTex.data() + aTri_Tex[itri * 3 + 2] * 2);
-            if (aNrm.size() != 0) {
-                ::glNormal3fv(aNrm.data() + aTri_Nrm[itri * 3 + 2] * 3);
+            ::glTexCoord2fv(obj.m_aTex.data() +
+                            obj.m_aTri_Tex[itri * 3 + 2] * 2);
+            if (obj.m_aNrm.size() != 0) {
+                ::glNormal3fv(obj.m_aNrm.data() +
+                              obj.m_aTri_Nrm[itri * 3 + 2] * 3);
             }
-            ::glVertex3fv(aXYZ.data() + aTri_XYZ[itri * 3 + 2] * 3);
+            ::glVertex3fv(obj.m_aXYZ.data() + obj.m_aTri_XYZ[itri * 3 + 2] * 3);
         }
         glEnd();
     }
@@ -98,6 +97,7 @@ void display(const std::vector<float> &aXYZ, const std::vector<float> &aNrm,
 // main
 // ------
 int main(void) {
+
     std::string path_obj =
         std::string(PATH_ROOT_DIR) + "/test_data/objInfo/bug/data.obj";
     std::string path_mtl =
@@ -105,61 +105,17 @@ int main(void) {
     std::string path_dir =
         std::string(PATH_ROOT_DIR) + "/test_data/objInfo/bug";
 
-    std::cout << path_obj << " " << path_mtl << std::endl;
+    OBJECT obj = OBJECT(path_obj, path_mtl);
 
-    std::vector<float> aXYZ;
-    std::vector<float> aNrm;
-    std::vector<float> aTex;
-    std::vector<unsigned int> aTri_XYZ;
-    std::vector<unsigned int> aTri_Tex;
-    std::vector<unsigned int> aTri_Nrm;
-    std::vector<CMaterialMap> aMtlMap;
-    std::vector<CMaterialInfo> aMtlInfo;
-
-    /* Read and check the obj data */
-    read_obj(aXYZ, aNrm, aTex, aTri_XYZ, aTri_Tex, aTri_Nrm, aMtlMap, path_obj);
-    std::cout << "aNrm.size : " << aNrm.size() << std::endl;
-    std::cout << "aTri_Nrm.size : " << aTri_Nrm.size() << std::endl;
-    std::cout << "contents of aNrm : " << std::endl;
-    for (int i = 0; i < aNrm.size(); i++) {
-        std::cout << aNrm[i] << std::endl;
-    }
-    std::cout << std::endl;
-    std::cout << "contents of aTri_Nrm : " << std::endl;
-    for (int i = 0; i < aTri_Nrm.size(); i++) {
-        std::cout << aTri_Nrm[i] << std::endl;
-    }
+    obj.load_obj();
     std::cout << "obj file loading succeeded " << std::endl;
 
-    std::cout << "number of vertices : " << aXYZ.size() / 3 << std::endl;
-    std::cout << "number of faces    : " << aTri_XYZ.size() / 3 << std::endl;
-    /* --------------------------- */
-
     // for (auto& v : aXYZ) { v *= 0.01; }
-    for (auto &v : aNrm) {
-        v *= -1;
-    }
+    // for (auto &v : aNrm) {
+    //     v *= -1;
+    // }
 
-    /* Read and check the mtl data */
-    read_mtl(aMtlInfo, path_mtl);
-    std::cout << "mtl file loading succeeded " << std::endl;
-    std::cout << std::endl;
-    std::cout << "number of material refered from obj : " << aMtlMap.size()
-              << std::endl;
-    std::cout << "number of material defined in mtl : " << aMtlInfo.size()
-              << std::endl;
-
-    for (const auto &mi : aMtlInfo) {
-        std::cout << std::endl;
-        std::cout << "material information" << std::endl;
-        std::cout << "   name : " << mi.name << std::endl;
-        std::cout << "   Kd : " << mi.Kd[0] << " " << mi.Kd[1] << " "
-                  << mi.Kd[2] << std::endl;
-        std::cout << "   map_Kd : " << mi.map_Kd << std::endl;
-        std::cout << std::endl;
-    }
-    /* -------------------------- */
-    std::cout << "size of MtlInfo : " << aMtlInfo.size() << std::endl;
+    obj.load_mtl();
 
     GLFWwindow *window;
     glfwSetErrorCallback(error_callback);
@@ -203,16 +159,16 @@ int main(void) {
         glLightfv(GL_LIGHT3, GL_POSITION, light3pos);
     }
 
-    for (auto &mm : aMtlMap) {
+    for (auto &mm : obj.m_aMtlMap) {
         mm.iMaterialInfo = -1;
 
-        for (unsigned int imi = 0; imi < aMtlInfo.size(); imi++) {
-            if (mm.name != aMtlInfo[imi].name) {
+        for (unsigned int imi = 0; imi < obj.m_aMtlInfo.size(); imi++) {
+            if (mm.name != obj.m_aMtlInfo[imi].name) {
                 continue;
             }
 
             mm.iMaterialInfo = imi;
-            CMaterialInfo &mi = aMtlInfo[imi];
+            CMaterialInfo &mi = obj.m_aMtlInfo[imi];
 
             if (mi.map_Kd.empty())
                 continue;
@@ -265,8 +221,7 @@ int main(void) {
         glTranslatef(0.0f, -0.9f, 0.0f);
         //    glTranslatef(0.0f, -0.5f, 0.0f);
 
-        display(aXYZ, aNrm, aTex, aTri_XYZ, aTri_Tex, aTri_Nrm, aMtlMap,
-                aMtlInfo);
+        display(obj);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

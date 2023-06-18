@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-#include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
 #ifndef STB_IMAGE_IMPLEMENTATION
@@ -39,24 +38,18 @@ void resize(int w, int h) {
 // ------
 // display
 // ------
-void display(const std::vector<float> &aXYZ, const std::vector<float> &aNrm,
-             const std::vector<float> &aTex,
-             const std::vector<unsigned int> &aTri_XYZ,
-             const std::vector<unsigned int> &aTri_Tex,
-             const std::vector<unsigned int> &aTri_Nrm,
-             const std::vector<CMaterialMap> &aMtlMap,
-             const std::vector<CMaterialInfo> &aMtlInfo) {
+void display(OBJECT obj) {
     //  glUseProgram(0);
     ::glEnable(GL_LIGHTING);
-    for (const auto &mm : aMtlMap) { // mmにマテリアルマップを保存
+    for (const auto &mm : obj.m_aMtlMap) { // mmにマテリアルマップを保存
         unsigned int imi = mm.iMaterialInfo;
-        if (imi < 0 || imi >= aMtlInfo.size()) {
+        if (imi < 0 || imi >= obj.m_aMtlInfo.size()) {
             ::glDisable(GL_TEXTURE_2D);
             const GLfloat color_white[] = {1.0, 1.0, 1.0, 1.0};
             glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color_white);
         } else {
             // std::cout << "texture exist" << std::endl;
-            const auto &mi = aMtlInfo[imi]; // miにマテリアル情報を保存
+            const auto &mi = obj.m_aMtlInfo[imi]; // miにマテリアル情報を保存
             ::glMaterialfv(GL_FRONT, GL_DIFFUSE, mi.Kd);
             if (::glIsTexture(mi.idTex_Kd)) {
                 // std::cout << "Bind texture : " << mi.idTex_Kd << std::endl;
@@ -71,17 +64,20 @@ void display(const std::vector<float> &aXYZ, const std::vector<float> &aNrm,
         for (unsigned int itri = mm.itri_start; itri < mm.itri_end; itri++) {
             // std::cout << "start: " << mm.itri_start << "end: " << mm.itri_end
             // << std::endl;
-            ::glTexCoord2fv(aTex.data() + aTri_Tex[itri * 3 + 0] * 2);
-            ::glNormal3fv(aNrm.data() + aTri_Nrm[itri * 3 + 0] * 3);
-            ::glVertex3fv(aXYZ.data() + aTri_XYZ[itri * 3 + 0] * 3);
+            ::glTexCoord2fv(obj.m_aTex.data() +
+                            obj.m_aTri_Tex[itri * 3 + 0] * 2);
+            ::glNormal3fv(obj.m_aNrm.data() + obj.m_aTri_Nrm[itri * 3 + 0] * 3);
+            ::glVertex3fv(obj.m_aXYZ.data() + obj.m_aTri_XYZ[itri * 3 + 0] * 3);
 
-            ::glTexCoord2fv(aTex.data() + aTri_Tex[itri * 3 + 1] * 2);
-            ::glNormal3fv(aNrm.data() + aTri_Nrm[itri * 3 + 1] * 3);
-            ::glVertex3fv(aXYZ.data() + aTri_XYZ[itri * 3 + 1] * 3);
+            ::glTexCoord2fv(obj.m_aTex.data() +
+                            obj.m_aTri_Tex[itri * 3 + 1] * 2);
+            ::glNormal3fv(obj.m_aNrm.data() + obj.m_aTri_Nrm[itri * 3 + 1] * 3);
+            ::glVertex3fv(obj.m_aXYZ.data() + obj.m_aTri_XYZ[itri * 3 + 1] * 3);
 
-            ::glTexCoord2fv(aTex.data() + aTri_Tex[itri * 3 + 2] * 2);
-            ::glNormal3fv(aNrm.data() + aTri_Nrm[itri * 3 + 2] * 3);
-            ::glVertex3fv(aXYZ.data() + aTri_XYZ[itri * 3 + 2] * 3);
+            ::glTexCoord2fv(obj.m_aTex.data() +
+                            obj.m_aTri_Tex[itri * 3 + 2] * 2);
+            ::glNormal3fv(obj.m_aNrm.data() + obj.m_aTri_Nrm[itri * 3 + 2] * 3);
+            ::glVertex3fv(obj.m_aXYZ.data() + obj.m_aTri_XYZ[itri * 3 + 2] * 3);
         }
         glEnd();
     }
@@ -100,49 +96,15 @@ int main(void) {
     std::string path_dir =
         std::string(PATH_ROOT_DIR) + "/test_data/objInfo/bug";
 
-    std::cout << path_obj << " " << path_mtl << std::endl;
+    OBJECT obj = OBJECT(path_obj, path_mtl);
 
-    std::vector<float> aXYZ;
-    std::vector<float> aNrm;
-    std::vector<float> aTex;
-    std::vector<unsigned int> aTri_XYZ;
-    std::vector<unsigned int> aTri_Tex;
-    std::vector<unsigned int> aTri_Nrm;
-    std::vector<CMaterialMap> aMtlMap;
-    std::vector<CMaterialInfo> aMtlInfo;
-
-    /* Read and check the obj data */
-    read_obj(aXYZ, aNrm, aTex, aTri_XYZ, aTri_Tex, aTri_Nrm, aMtlMap, path_obj);
-    std::cout << "obj file loading succeeded " << std::endl;
-
-    std::cout << "number of vertices : " << aXYZ.size() / 3 << std::endl;
-    std::cout << "number of faces    : " << aTri_XYZ.size() / 3 << std::endl;
-    /* --------------------------- */
+    obj.load_obj();
+    obj.load_mtl();
 
     // for (auto& v : aXYZ) { v *= 0.1; }
-    for (auto &v : aNrm) {
+    for (auto &v : obj.m_aNrm) {
         v *= -1;
     }
-
-    /* Read and check the mtl data */
-    read_mtl(aMtlInfo, path_mtl);
-    std::cout << "mtl file loading succeeded " << std::endl;
-    std::cout << std::endl;
-    std::cout << "number of material refered from obj : " << aMtlMap.size()
-              << std::endl;
-    std::cout << "number of material defined in mtl : " << aMtlInfo.size()
-              << std::endl;
-
-    for (const auto &mi : aMtlInfo) {
-        std::cout << std::endl;
-        std::cout << "material information" << std::endl;
-        std::cout << "   name : " << mi.name << std::endl;
-        std::cout << "   Kd : " << mi.Kd[0] << " " << mi.Kd[1] << " "
-                  << mi.Kd[2] << std::endl;
-        std::cout << "   map_Kd : " << mi.map_Kd << std::endl;
-        std::cout << std::endl;
-    }
-    /* -------------------------- */
 
     GLFWwindow *window;
     glfwSetErrorCallback(error_callback);
@@ -187,16 +149,16 @@ int main(void) {
         glLightfv(GL_LIGHT0, GL_SPECULAR, lightcol);
     }
 
-    for (auto &mm : aMtlMap) {
+    for (auto &mm : obj.m_aMtlMap) {
         mm.iMaterialInfo = -1;
 
-        for (unsigned int imi = 0; imi < aMtlInfo.size(); imi++) {
-            if (mm.name != aMtlInfo[imi].name) {
+        for (unsigned int imi = 0; imi < obj.m_aMtlInfo.size(); imi++) {
+            if (mm.name != obj.m_aMtlInfo[imi].name) {
                 continue;
             }
 
             mm.iMaterialInfo = imi;
-            CMaterialInfo &mi = aMtlInfo[imi];
+            CMaterialInfo &mi = obj.m_aMtlInfo[imi];
 
             if (mi.map_Kd.empty())
                 continue;
@@ -253,8 +215,7 @@ int main(void) {
         //    glBindVertexArray(VAO);
         //    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_Tri);
 
-        display(aXYZ, aNrm, aTex, aTri_XYZ, aTri_Tex, aTri_Nrm, aMtlMap,
-                aMtlInfo);
+        display(obj);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
